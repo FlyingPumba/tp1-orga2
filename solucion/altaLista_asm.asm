@@ -27,19 +27,19 @@
 	%define TRUE 	0
 	%define FALSE 	0
 
-	%define ALTALISTA_SIZE     		0
+	%define ALTALISTA_SIZE     		16
 	%define OFFSET_PRIMERO 			0
-	%define OFFSET_ULTIMO  			0
+	%define OFFSET_ULTIMO  			8
 
-	%define NODO_SIZE     			0
+	%define NODO_SIZE     			24
 	%define OFFSET_SIGUIENTE   		0
-	%define OFFSET_ANTERIOR   		0
-	%define OFFSET_DATO 			0
+	%define OFFSET_ANTERIOR   		8
+	%define OFFSET_DATO 			16
 
-	%define ESTUDIANTE_SIZE  		0
+	%define ESTUDIANTE_SIZE  		20
 	%define OFFSET_NOMBRE 			0
-	%define OFFSET_GRUPO  			0
-	%define OFFSET_EDAD 			0
+	%define OFFSET_GRUPO  			8
+	%define OFFSET_EDAD 			16
 
 
 section .rodata
