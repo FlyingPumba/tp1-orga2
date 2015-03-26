@@ -21,6 +21,8 @@
 ; YA IMPLEMENTADAS EN C
 	extern string_iguales
 	extern insertarAtras
+	extern malloc
+	extern free
 
 ; /** DEFINES **/    >> SE RECOMIENDA COMPLETAR LOS DEFINES CON LOS VALORES CORRECTOS
 	%define NULL 	0
@@ -55,11 +57,29 @@ section .text
 
 	; estudiante *estudianteCrear( char *nombre, char *grupo, unsigned int edad );
 	estudianteCrear:
-		; COMPLETAR AQUI EL CODIGO
+		push rbp
+		mov rbp, rsp
+		; ****************
+		mov rcx, rdi; hago espacio en rdi
+		mov rdi, ESTUDIANTE_SIZE ; pido memoria para un nuevo estudiante_t
+		call malloc
+		; TODO: copiar los parametros nombre y grupo usando la funcion auxiliar string_copiar
+		mov [rax + OFFSET_NOMBRE], rcx ; copio el puntero a nombre
+		mov [rax + OFFSET_GRUPO], rsi ; copio el puntero a grupo
+		mov [rax + OFFSET_EDAD], rdx ; copio la edad
+		; ****************
+		pop rbp
+		ret
 
 	; void estudianteBorrar( estudiante *e );
 	estudianteBorrar:
-		; COMPLETAR AQUI EL CODIGO
+		push rbp
+		mov rbp, rsp
+		; ****************
+		call free
+		; ****************
+		pop rbp
+		ret
 
 	; bool menorEstudiante( estudiante *e1, estudiante *e2 ){
 	menorEstudiante:
