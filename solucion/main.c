@@ -14,6 +14,7 @@ extern bool menorEstudiante( estudiante *e1, estudiante *e2 );
 extern void estudianteConFormato( estudiante *e, tipoFuncionModificarString f );
 extern void estudianteImprimir( estudiante *e, FILE *file );
 
+/** Funciones de altaLista y nodo **/
 extern nodo *nodoCrear( void *dato );
 extern void nodoBorrar( nodo *n, tipoFuncionBorrarDato f );
 extern altaLista *altaListaCrear( void );
@@ -71,13 +72,16 @@ int main (void){
 	estudianteImprimir(e3, stdout);
 	estudianteBorrar(e3);
 
-	// probando funcinoes de nodo
+	// probando funciones de nodo
 	nodo *n = nodoCrear(e1);
 	void *dato = n->dato;
 	estudiante *e_aux = (estudiante*)dato;
 	printf("%s\n", e_aux->nombre);
 
-	//no hace falta llamar a estudianteBorrar(e1); ya que lo hace nodoBorrar
+	// no hace falta llamar a estudianteBorrar(e1); ya que lo hace nodoBorrar
 	nodoBorrar(n, (tipoFuncionBorrarDato)estudianteBorrar);
+
+	// probando funciones de altaLista
+	altaLista* l = altaListaCrear();
 	return 0;
 }

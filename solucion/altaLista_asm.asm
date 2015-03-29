@@ -261,7 +261,18 @@ section .text
 
 	; altaLista *altaListaCrear( void )
 	altaListaCrear:
-		; COMPLETAR AQUI EL CODIGO
+		push rbp
+		mov rbp, rsp
+		; ****************
+		mov rdi, ALTALISTA_SIZE ; pido memoria para un nuevo nodo_t
+		call malloc
+
+		mov rdi, rax
+		mov QWORD [rdi + OFFSET_PRIMERO], NULL ; NULL para *primero
+		mov QWORD [rdi + OFFSET_ULTIMO], NULL ; NULL para *ultimo
+		; ****************
+		pop rbp
+		ret
 
 	; void altaListaBorrar( altaLista *l, tipoFuncionBorrarDato f )
 	altaListaBorrar:
