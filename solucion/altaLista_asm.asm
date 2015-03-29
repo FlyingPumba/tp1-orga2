@@ -241,8 +241,23 @@ section .text
 		ret
 
 	; void nodoBorrar( nodo *n, tipoFuncionBorrarDato f )
+	%define dir_borrar [rbp-8]
 	nodoBorrar:
-		; COMPLETAR AQUI EL CODIGO
+		push rbp
+		mov rbp, rsp
+		sub rsp, 8
+		; ****************
+		mov dir_borrar, rdi ; guardo dir a borrar
+
+		mov rdi, [rdi + OFFSET_DATO]
+		call rsi ; libero la memoria que use para el dato
+
+		mov rdi, dir_borrar
+		call free ; libero la memoria que use almacenar la estructura nodo
+		; ****************
+		add rsp, 8
+		pop rbp
+		ret
 
 	; altaLista *altaListaCrear( void )
 	altaListaCrear:

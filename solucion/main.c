@@ -76,6 +76,8 @@ int main (void){
 	void *dato = n->dato;
 	estudiante *e_aux = (estudiante*)dato;
 	printf("%s\n", e_aux->nombre);
-	estudianteBorrar(e1);
+
+	//no hace falta llamar a estudianteBorrar(e1); ya que lo hace nodoBorrar
+	nodoBorrar(n, (tipoFuncionBorrarDato)estudianteBorrar);
 	return 0;
 }
