@@ -121,8 +121,49 @@ section .text
 		ret
 
 	; bool menorEstudiante( estudiante *e1, estudiante *e2 ){
+	%define e1 [rbp-8]
+	%define e2 [rbp-16]
 	menorEstudiante:
-		; COMPLETAR AQUI EL CODIGO
+		push rbp
+		mov rbp, rsp
+		sub rsp, 16
+		; ****************
+		mov e1, rdi
+		mov e2, rsi
+
+		mov rdi, [rdi + OFFSET_NOMBRE]
+		mov rsi, [rsi + OFFSET_NOMBRE]
+		call string_menor
+
+		cmp rax, TRUE
+		je menorEstudiante_true ; e1.nombre < e2.nombre
+
+		mov rdi, e1
+		mov rsi, e2
+		mov rdi, [rdi + OFFSET_NOMBRE]
+		mov rsi, [rsi + OFFSET_NOMBRE]
+
+		call string_iguales
+		cmp rax, FALSE
+		je  menorEstudiante_false ; e1.nombre > e2.nombre
+
+		mov rdi, e1
+		mov rsi, e2
+		mov rdi, [rdi + OFFSET_EDAD]
+		mov rsi, [rsi + OFFSET_EDAD]
+
+		cmp rdi, rsi
+		jg menorEstudiante_false ;  e1.nombre == e2.nombre y  e1.edad > e2.edad
+	menorEstudiante_true:
+		mov rax, QWORD TRUE
+		jmp fin_menorEstudiante
+	menorEstudiante_false:
+		mov rax, QWORD FALSE
+		; ****************
+	fin_menorEstudiante:
+		add rsp, 16
+		pop rbp
+		ret
 
 	; void estudianteConFormato( estudiante *e, tipoFuncionModificarString f )
 	estudianteConFormato:
