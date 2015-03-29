@@ -21,6 +21,7 @@
 ; AUXILIARES
 	global string_longitud
 	global string_copiar
+	global string_menor
 
 ; YA IMPLEMENTADAS EN C
 	extern string_iguales
@@ -236,3 +237,32 @@ section .text
 
 	; bool string_menor( char *s1, char *s2 )
 	string_menor:
+		push rbp
+		mov rbp, rsp
+		; ****************
+		xor rax, rax ; limpio rax
+	ciclo_string_menor:
+		cmp BYTE [rsi], 0x0 ; verifico si termino s2
+		je string_menor_false ; si termino, voy al fin
+		cmp BYTE [rdi], 0x0 ; verifico si termino s1
+		je string_menor_true ; si termino, voy al fin
+
+		mov cl, BYTE [rsi]
+		cmp BYTE [rdi], cl
+		jl string_menor_true ; s1[i] > s2[i]
+		jg string_menor_false ; s1[i] < s2[i]
+
+		add al, 1 ; incremento el contados. Uso AL porque la longitud de s puede ser a lo sumo de 1 Byte
+		add rdi, OFFSET_CHAR ; paso al siguiente char del string
+		add rsi, OFFSET_CHAR ; paso al siguiente char del string
+		jmp ciclo_string_menor
+
+	string_menor_true:
+		mov rax, QWORD TRUE
+		jmp fin_string_menor
+	string_menor_false:
+		mov rax, QWORD FALSE
+		; ****************
+	fin_string_menor:
+		pop rbp
+		ret
