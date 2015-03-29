@@ -1,10 +1,5 @@
 #include "altaLista.h"
 
-
-
-
-
-
 /** Funciones Auxiliares ya implementadas en C **/
 
 bool string_iguales( char *s1, char *s2 ){
@@ -30,4 +25,3 @@ void insertarAtras( altaLista *l, void *dato ){
     nuevoNodo->anterior = l->ultimo;
     l->ultimo = nuevoNodo;
 }
-

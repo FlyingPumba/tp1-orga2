@@ -5,7 +5,7 @@
 	global menorEstudiante
 	global estudianteConFormato
 	global estudianteImprimir
-	
+
 ; ALTALISTA y NODO
 	global nodoCrear
 	global nodoBorrar
@@ -17,6 +17,10 @@
 	global edadMedia
 	global insertarOrdenado
 	global filtrarAltaLista
+
+; AUXILIARES
+	global string_longitud
+	global string_copiar
 
 ; YA IMPLEMENTADAS EN C
 	extern string_iguales
@@ -43,6 +47,7 @@
 	%define OFFSET_GRUPO  			8
 	%define OFFSET_EDAD 			16
 
+	%define OFFSET_CHAR 			1
 
 section .rodata
 
@@ -52,7 +57,7 @@ section .data
 
 section .text
 
-;/** FUNCIONES OBLIGATORIAS DE ESTUDIANTE **/    >> PUEDEN CREAR LAS FUNCIONES AUXILIARES QUE CREAN CONVENIENTES
+;/** FUNCIONES OBLIGATORIAS DE ESTUDIANTE **/
 ;---------------------------------------------------------------------------------------------------------------
 
 	; estudiante *estudianteCrear( char *nombre, char *grupo, unsigned int edad );
@@ -88,13 +93,13 @@ section .text
 	; void estudianteConFormato( estudiante *e, tipoFuncionModificarString f )
 	estudianteConFormato:
 		; COMPLETAR AQUI EL CODIGO
-	
+
 	; void estudianteImprimir( estudiante *e, FILE *file )
 	estudianteImprimir:
 		; COMPLETAR AQUI EL CODIGO
 
 
-;/** FUNCIONES DE ALTALISTA Y NODO **/    >> PUEDEN CREAR LAS FUNCIONES AUXILIARES QUE CREAN CONVENIENTES
+;/** FUNCIONES DE ALTALISTA Y NODO **/
 ;--------------------------------------------------------------------------------------------------------
 
 	; nodo *nodoCrear( void *dato )
@@ -118,7 +123,7 @@ section .text
 		; COMPLETAR AQUI EL CODIGO
 
 
-;/** FUNCIONES AVANZADAS **/    >> PUEDEN CREAR LAS FUNCIONES AUXILIARES QUE CREAN CONVENIENTES
+;/** FUNCIONES AVANZADAS **/
 ;----------------------------------------------------------------------------------------------
 
 	; float edadMedia( altaLista *l )
@@ -133,3 +138,31 @@ section .text
 	filtrarAltaLista:
 		; COMPLETAR AQUI EL CODIGO
 
+
+	;/** FUNCIONES AUXILIARES **/
+;----------------------------------------------------------------------------------------------
+
+	; unsigned char string_longitud( char *s )
+	string_longitud:
+		push rbp
+		mov rbp, rsp
+		push rdi
+		; ****************
+		mov rax, 0
+		cmp BYTE [rdi], 0x0
+		je resultado
+		add rax, 1
+	ciclo:
+		cmp BYTE [rdi + OFFSET_CHAR], 0x0
+		je resultado
+		add rax, 1
+		add rdi, OFFSET_CHAR
+		jmp ciclo
+		; ****************
+	resultado:
+		pop rdi
+		pop rbp
+		ret
+
+	; char *string_copiar( char *s )
+	string_copiar:
