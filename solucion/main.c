@@ -14,6 +14,13 @@ extern bool menorEstudiante( estudiante *e1, estudiante *e2 );
 extern void estudianteConFormato( estudiante *e, tipoFuncionModificarString f );
 extern void estudianteImprimir( estudiante *e, FILE *file );
 
+extern nodo *nodoCrear( void *dato );
+extern void nodoBorrar( nodo *n, tipoFuncionBorrarDato f );
+extern altaLista *altaListaCrear( void );
+extern void altaListaBorrar( altaLista *l, tipoFuncionBorrarDato f );
+extern void altaListaImprimir( altaLista *l, char *archivo, tipoFuncionImprimirDato f );
+
+// ejemplo de tipoFuncionModificarString
 void  sinMayusculas( char* s) {
 	int n = string_longitud(s);
 	for(int i = 0; i<=n; i++){
@@ -62,7 +69,13 @@ int main (void){
 	printf("%s, %d - %s  \n", e1->nombre, e1->edad, e1->grupo);
 
 	estudianteImprimir(e3, stdout);
-	estudianteBorrar(e1);
 	estudianteBorrar(e3);
+
+	// probando funcinoes de nodo
+	nodo *n = nodoCrear(e1);
+	void *dato = n->dato;
+	estudiante *e_aux = (estudiante*)dato;
+	printf("%s\n", e_aux->nombre);
+	estudianteBorrar(e1);
 	return 0;
 }

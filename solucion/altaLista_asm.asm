@@ -219,8 +219,26 @@ section .text
 ;--------------------------------------------------------------------------------------------------------
 
 	; nodo *nodoCrear( void *dato )
+	%define dato [rbp-8]
 	nodoCrear:
-		; COMPLETAR AQUI EL CODIGO
+		push rbp
+		mov rbp, rsp
+		sub rsp, 8
+		; ****************
+		mov dato, QWORD rdi ; salvo los parametros antes de hacer la llamada a malloc
+
+		mov rdi, NODO_SIZE ; pido memoria para un nuevo nodo_t
+		call malloc
+
+		mov rdi, rax
+		mov QWORD [rdi + OFFSET_SIGUIENTE], NULL ; NULL para *siguiente
+		mov QWORD [rdi + OFFSET_ANTERIOR], NULL ; NULL para *anterior
+		mov QWORD rcx, dato
+		mov [rdi + OFFSET_DATO], rcx ; copio el puntero al dato
+		; ****************
+		add rsp, 8
+		pop rbp
+		ret
 
 	; void nodoBorrar( nodo *n, tipoFuncionBorrarDato f )
 	nodoBorrar:
