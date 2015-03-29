@@ -146,23 +146,46 @@ section .text
 	string_longitud:
 		push rbp
 		mov rbp, rsp
-		push rdi
 		; ****************
-		mov rax, 0
+		xor rax, rax
 		cmp BYTE [rdi], 0x0
-		je resultado
+		je fin_string_longitud
 		add rax, 1
-	ciclo:
+	ciclo_string_longitud:
 		cmp BYTE [rdi + OFFSET_CHAR], 0x0
-		je resultado
+		je fin_string_longitud
 		add rax, 1
 		add rdi, OFFSET_CHAR
-		jmp ciclo
+		jmp ciclo_string_longitud
 		; ****************
-	resultado:
-		pop rdi
+	fin_string_longitud:
 		pop rbp
 		ret
 
 	; char *string_copiar( char *s )
+	%define dir [rbp-8]
+	%define len [rbp-16]
 	string_copiar:
+		push rbp
+		mov rbp, rsp
+		sub rsp, 16
+		; ****************
+		mov dir, rdi ; dir <- &s
+		call string_longitud ; rax <- len(s)
+		mov len, rax ; len <- len(s)
+		call malloc ; give me some mem ! (1 byte para cada char en s)
+		mov rdx, rax ; copio el puntero que me devolvio malloc para trabajar con el
+	ciclo_string_copiar:
+		mov rcx, dir
+		mov [rdx], rcx
+		cmp BYTE len, 0 ; hasta que la longitud del string sea cero
+		je fin_string_copiar
+		add rdx, OFFSET_CHAR
+		add BYTE dir, OFFSET_CHAR
+		sub BYTE len, 1
+		jmp ciclo_string_copiar
+		; ****************
+	fin_string_copiar:
+		add rsp, 16
+		pop rbp
+		ret
