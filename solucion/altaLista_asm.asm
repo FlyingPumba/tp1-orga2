@@ -160,29 +160,43 @@ section .text
 		ret
 
 	; char *string_copiar( char *s )
-	%define dir [rbp-8]
-	%define len [rbp-16]
+	%define dir_orig [rbp-8]
+	%define dir_nueva [rbp-16]
+	%define len [rbp-24]
 	string_copiar:
 		push rbp
 		mov rbp, rsp
-		sub rsp, 16
+		sub rsp, 24
 		; ****************
-		mov dir, rdi ; dir <- &s
-		call string_longitud ; rax <- len(s)
-		mov len, rax ; len <- len(s)
+		mov dir_orig, rdi ; dir_orig <- &s
+		call string_longitud ; al <- len(s)
+		mov BYTE len, al ; len <- len(s)
+
+		mov rdi, rax ; pido len(s) bytes
 		call malloc ; give me some mem ! (1 byte para cada char en s)
-		mov rdx, rax ; copio el puntero que me devolvio malloc para trabajar con el
+		mov dir_nueva, rax
+
+		xor rcx, rcx ; limpio rcx porque lo voy a usar para indexar el string; i <- 0
+
 	ciclo_string_copiar:
-		mov rcx, dir
-		mov [rdx], rcx
-		cmp BYTE len, 0 ; hasta que la longitud del string sea cero
+		cmp BYTE cl, len ; mientras i < len(s)
 		je fin_string_copiar
-		add rdx, OFFSET_CHAR
-		add BYTE dir, OFFSET_CHAR
-		sub BYTE len, 1
+
+		mov rdi, dir_orig
+		add di, cx ; rdi <- *s + i
+
+		mov rax, dir_nueva
+		add al, cl ; rax <- *nueva + i
+
+		mov dl, BYTE [rdi]
+		mov BYTE [rax], dl ; copio un char
+
+		add BYTE cl, OFFSET_CHAR ; incremento i en 1
+
 		jmp ciclo_string_copiar
 		; ****************
 	fin_string_copiar:
-		add rsp, 16
+		mov rax, dir_nueva
+		add rsp, 24
 		pop rbp
 		ret
