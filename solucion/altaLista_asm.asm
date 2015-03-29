@@ -30,7 +30,7 @@
 
 ; /** DEFINES **/
 	%define NULL 	0
-	%define TRUE 	0
+	%define TRUE 	1
 	%define FALSE 	0
 
 	%define ALTALISTA_SIZE     		16
@@ -72,7 +72,7 @@ section .text
 		; ****************
 		mov nombre, QWORD rdi ; salvo los parametros antes de hacer la llamada a malloc
 		mov grupo, QWORD rsi
-		mov edad, DWORD rdx
+		mov edad, rdx
 
 		mov rdi, ESTUDIANTE_SIZE ; pido memoria para un nuevo estudiante_t
 		call malloc
@@ -97,12 +97,25 @@ section .text
 		ret
 
 	; void estudianteBorrar( estudiante *e );
+	%define dir_borrar [rbp-8]
 	estudianteBorrar:
 		push rbp
 		mov rbp, rsp
+		sub rsp, 8
 		; ****************
-		call free
+		mov dir_borrar, rdi ; guardo dir a borrar
+
+		mov rdi, [rdi + OFFSET_NOMBRE]
+		call free ; libero la memoria que use para copiar el nombre
+
+		mov rdi, dir_borrar
+		mov rdi, [rdi + OFFSET_GRUPO]
+		call free ; libero la memoria que use para copiar el grupo
+
+		mov rdi, dir_borrar
+		call free ; libero la memoria que use almacenar la estructura estudiante
 		; ****************
+		add rsp, 8
 		pop rbp
 		ret
 
@@ -220,3 +233,6 @@ section .text
 		add rsp, 24
 		pop rbp
 		ret
+
+	; bool string_menor( char *s1, char *s2 )
+	string_menor:

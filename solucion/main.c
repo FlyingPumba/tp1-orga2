@@ -3,7 +3,7 @@
 
 /** Funciones auxiliares **/
 extern unsigned char string_longitud( char *s );
-//extern char *string_copiar( char *s );
+extern char *string_copiar( char *s );
 
 /** Funciones de estudiante **/
 extern estudiante *estudianteCrear( char *nombre, char *grupo, unsigned int edad );
@@ -21,9 +21,12 @@ int main (void){
 	char *c = string_copiar("abcd");
 	char *d = string_copiar("");
 	printf("%s, %s\n", c, d);
+	free(c);
+	free(d);
 
 	estudiante* e = estudianteCrear("Ivan", "ASDF", 21);
 	printf("%s, %d - %s  \n", e->nombre, e->edad, e->grupo);
-	
+	estudianteBorrar(e);
+
 	return 0;
 }
