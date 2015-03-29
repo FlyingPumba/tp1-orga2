@@ -14,6 +14,15 @@ extern bool menorEstudiante( estudiante *e1, estudiante *e2 );
 extern void estudianteConFormato( estudiante *e, tipoFuncionModificarString f );
 extern void estudianteImprimir( estudiante *e, FILE *file );
 
+void  sinMayusculas( char* s) {
+	int n = string_longitud(s);
+	for(int i = 0; i<=n; i++){
+		if(s[i] >= 65 && s[i]<=90) {
+			s[i] = s[i] + 32;
+		}
+	}
+}
+
 int main (void){
 	// probando funciones auxiliares
 	unsigned char a = string_longitud("abcd");
@@ -47,8 +56,11 @@ int main (void){
 	b5 = menorEstudiante(e2, e1); // true
 	printf("%d, %d, %d, %d, %d\n", b1, b2, b3, b4, b5);
 
-	estudianteBorrar(e1);
+	//estudianteBorrar(e1);
 	estudianteBorrar(e2);
 	estudianteBorrar(e3);
+
+	estudianteConFormato(e1, (tipoFuncionModificarString) sinMayusculas);
+	printf("%s, %d - %s  \n", e1->nombre, e1->edad, e1->grupo);
 	return 0;
 }

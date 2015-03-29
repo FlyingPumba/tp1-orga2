@@ -166,8 +166,26 @@ section .text
 		ret
 
 	; void estudianteConFormato( estudiante *e, tipoFuncionModificarString f )
+	%define e [rbp-8]
+	%define f [rbp-16]
 	estudianteConFormato:
-		; COMPLETAR AQUI EL CODIGO
+		push rbp
+		mov rbp, rsp
+		sub rsp, 16
+		; ****************
+		mov e, rdi
+		mov f, rsi
+
+		mov rdi, [rdi + OFFSET_NOMBRE]
+		call f
+
+		mov rdi, e
+		mov rdi, [rdi + OFFSET_GRUPO]
+		call f
+		; ****************
+		add rsp, 16
+		pop rbp
+		ret
 
 	; void estudianteImprimir( estudiante *e, FILE *file )
 	estudianteImprimir:
