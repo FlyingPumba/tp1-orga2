@@ -12,15 +12,6 @@ extern bool menorEstudiante( estudiante *e1, estudiante *e2 );
 extern void estudianteConFormato( estudiante *e, tipoFuncionModificarString f );
 extern void estudianteImprimir( estudiante *e, FILE *file );
 
-/*char *string_copiar( char *s ) {
-	int n = string_longitud(s);
-	char* nuevo = malloc(n);
-	for (int i = 0; i < n; i++) {
-		nuevo[i] = s[i];
-	}
-	return nuevo;
-}*/
-
 int main (void){
 	// probando funciones auxiliares
 	unsigned char a = string_longitud("abcd");
@@ -32,5 +23,7 @@ int main (void){
 	printf("%s, %s\n", c, d);
 
 	estudiante* e = estudianteCrear("Ivan", "ASDF", 21);
+	printf("%s, %d - %s  \n", e->nombre, e->edad, e->grupo);
+	
 	return 0;
 }

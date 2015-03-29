@@ -28,7 +28,7 @@
 	extern malloc
 	extern free
 
-; /** DEFINES **/    >> SE RECOMIENDA COMPLETAR LOS DEFINES CON LOS VALORES CORRECTOS
+; /** DEFINES **/
 	%define NULL 	0
 	%define TRUE 	0
 	%define FALSE 	0
@@ -61,18 +61,38 @@ section .text
 ;---------------------------------------------------------------------------------------------------------------
 
 	; estudiante *estudianteCrear( char *nombre, char *grupo, unsigned int edad );
+	%define dir_nueva [rbp-8]
+	%define nombre [rbp-16]
+	%define edad [rbp-24]
+	%define grupo [rbp-32]
 	estudianteCrear:
 		push rbp
 		mov rbp, rsp
+		sub rsp, 32
 		; ****************
-		mov rcx, rdi; hago espacio en rdi
+		mov nombre, QWORD rdi ; salvo los parametros antes de hacer la llamada a malloc
+		mov grupo, QWORD rsi
+		mov edad, DWORD rdx
+
 		mov rdi, ESTUDIANTE_SIZE ; pido memoria para un nuevo estudiante_t
 		call malloc
-		; TODO: copiar los parametros nombre y grupo usando la funcion auxiliar string_copiar
-		mov [rax + OFFSET_NOMBRE], rcx ; copio el puntero a nombre
-		mov [rax + OFFSET_GRUPO], rsi ; copio el puntero a grupo
-		mov [rax + OFFSET_EDAD], rdx ; copio la edad
+		mov dir_nueva, rax
+
+		mov edi, DWORD edad
+		mov [rax + OFFSET_EDAD], edi ; copio la edad
+
+		mov rdi, QWORD nombre
+		call string_copiar
+		mov rdi, dir_nueva
+		mov [rdi + OFFSET_NOMBRE], rax ; copio el nombre
+
+		mov rdi, QWORD grupo
+		call string_copiar
+		mov rdi, dir_nueva
+		mov [rdi + OFFSET_GRUPO], rax ; copio el grupo
 		; ****************
+		mov rax, dir_nueva
+		add rsp, 32
 		pop rbp
 		ret
 
@@ -160,8 +180,8 @@ section .text
 		ret
 
 	; char *string_copiar( char *s )
-	%define dir_orig [rbp-8]
-	%define dir_nueva [rbp-16]
+	%define dir_nueva [rbp-8]
+	%define dir_orig [rbp-16]
 	%define len [rbp-24]
 	string_copiar:
 		push rbp
