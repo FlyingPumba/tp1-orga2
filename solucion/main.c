@@ -56,11 +56,13 @@ int main (void){
 	b5 = menorEstudiante(e2, e1); // true
 	printf("%d, %d, %d, %d, %d\n", b1, b2, b3, b4, b5);
 
-	//estudianteBorrar(e1);
 	estudianteBorrar(e2);
-	estudianteBorrar(e3);
 
 	estudianteConFormato(e1, (tipoFuncionModificarString) sinMayusculas);
 	printf("%s, %d - %s  \n", e1->nombre, e1->edad, e1->grupo);
+
+	estudianteImprimir(e3, stdout);
+	estudianteBorrar(e1);
+	estudianteBorrar(e3);
 	return 0;
 }

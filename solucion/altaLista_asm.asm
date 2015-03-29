@@ -28,6 +28,7 @@
 	extern insertarAtras
 	extern malloc
 	extern free
+	extern fprintf
 
 ; /** DEFINES **/
 	%define NULL 	0
@@ -55,6 +56,7 @@ section .rodata
 
 section .data
 
+	formato_estudiante_imprimir: DB "%s", 10, 9, "%s", 10, 9, "%d", 10
 
 section .text
 
@@ -188,9 +190,30 @@ section .text
 		ret
 
 	; void estudianteImprimir( estudiante *e, FILE *file )
+	%define e [rbp-8]
+	%define file [rbp-16]
 	estudianteImprimir:
-		; COMPLETAR AQUI EL CODIGO
+		push rbp
+		mov rbp, rsp
+		sub rsp, 16
+		; ****************
+		mov e, rdi
+		mov file, rsi
 
+		;fprintf (file, formato_estudiante_imprimir, e.nombre, e.grupo, e.edad);
+		mov rdi, file
+		mov rsi, formato_estudiante_imprimir
+		mov rdx, e
+		mov rdx, [rdx + OFFSET_NOMBRE]
+		mov rcx, e
+		mov rcx, [rcx + OFFSET_GRUPO]
+		mov r8, e
+		mov r8, [r8 + OFFSET_EDAD]
+		call fprintf
+		; ****************
+		add rsp, 16
+		pop rbp
+		ret
 
 ;/** FUNCIONES DE ALTALISTA Y NODO **/
 ;--------------------------------------------------------------------------------------------------------
