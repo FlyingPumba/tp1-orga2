@@ -19,8 +19,8 @@ int main (void){
 	unsigned char b = string_longitud("");
 	printf("%d, %d\n", a, b);
 
-	char *c = string_copiar("abcd");
-	printf("%s\n", c);
+	//char *c = string_copiar("abcd");
+	//printf("%s\n", c);
 
 	estudiante* e = estudianteCrear("Ivan", "ASDF", 21);
 	return 0;

@@ -147,15 +147,12 @@ section .text
 		push rbp
 		mov rbp, rsp
 		; ****************
-		xor rax, rax
-		cmp BYTE [rdi], 0x0
-		je fin_string_longitud
-		add rax, 1
+		xor rax, rax ; limpio rax
 	ciclo_string_longitud:
-		cmp BYTE [rdi + OFFSET_CHAR], 0x0
-		je fin_string_longitud
-		add rax, 1
-		add rdi, OFFSET_CHAR
+		cmp BYTE [rdi], 0x0 ; verifico si ya termino el string o no
+		je fin_string_longitud ; si termino, voy al fin
+		add al, 1 ; incremento el contados. Uso AL porque la longitud de s puede ser a lo sumo de 1 Byte
+		add rdi, OFFSET_CHAR ; paso al siguiente char del string
 		jmp ciclo_string_longitud
 		; ****************
 	fin_string_longitud:
