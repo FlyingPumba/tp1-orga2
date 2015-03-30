@@ -373,8 +373,43 @@ section .text
 ;----------------------------------------------------------------------------------------------
 
 	; float edadMedia( altaLista *l )
+	%define last_nodo_aux [rbp-8]
 	edadMedia:
-		; COMPLETAR AQUI EL CODIGO
+		push rbp
+		mov rbp, rsp
+		sub rsp, 24
+		; ****************
+		mov rdi, [rdi + OFFSET_PRIMERO] ; puntero al primer nodo
+		xor rax, rax ; limpio rax para usarlo como sumador
+		xor rcx, rcx ; limpio rcx para usarlo como contador
+
+		cmp rdi, NULL
+		je edadMedia_vacia
+	edadMedia_ciclo:
+		cmp rdi, NULL
+		je edadMedia_promedio
+
+		mov rsi, rdi
+		mov rsi, [rsi + OFFSET_DATO]
+		mov rsi, [rsi + OFFSET_EDAD]
+		add eax, esi
+		add rcx, QWORD 1
+
+		mov rdi, [rdi + OFFSET_SIGUIENTE]
+		jmp edadMedia_ciclo
+	edadMedia_promedio:
+		movq xmm0, rax
+		movq xmm1, rcx
+		divss xmm0, xmm1 ; rax / rcx
+		jmp edadMedia_fin
+	edadMedia_vacia:
+		xor rax, rax
+		movq xmm0, rax  ; return 0 if list if empty
+		; ****************
+	edadMedia_fin:
+		add rsp, 24
+		pop rbp
+		ret
 
 	; void insertarOrdenado( altaLista *l, void *dato, tipoFuncionCompararDato f )
 	%define dir_lista [rbp-8]

@@ -125,6 +125,9 @@ void funciones_avanzadas() {
 	estudiante* e3 = estudianteCrear("Juan", "ASDF", 22);
 	insertarOrdenado(l, e3, (tipoFuncionCompararDato) menorEstudiante);
 
+	float prom = edadMedia(l);
+	printf("%5.2f\n", prom);
+
 	estudiante* e4 = estudianteCrear("Xilofon", "ASDF", 22);
 	filtrarAltaLista(l, (tipoFuncionCompararDato) menorEstudiante, e4);
 	// filtrar la lista por e4 deberia dejarla como estaba, ya que todos tiene nombre menor
