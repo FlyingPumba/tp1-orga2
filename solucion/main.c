@@ -37,6 +37,17 @@ void  sinMayusculas( char* s) {
 	}
 }
 
+void insertarAdelante( altaLista *l, void *dato ){
+	nodo *nuevoNodo = nodoCrear( dato );
+	nodo *primerNodo = l->primero;
+	if( primerNodo == NULL )
+		l->ultimo = nuevoNodo;
+	else
+		primerNodo->anterior = nuevoNodo;
+		nuevoNodo->siguiente = primerNodo;
+	l->primero = nuevoNodo;
+}
+
 void insertarOrdenado( altaLista *l, void *dato, tipoFuncionCompararDato f ) {
 	if (l->primero == NULL) {
 		nodo *nuevo = nodoCrear(dato);
@@ -65,17 +76,6 @@ void insertarOrdenado( altaLista *l, void *dato, tipoFuncionCompararDato f ) {
 			nuevo->siguiente = last;
 		}
 	}
-}
-
-void insertarAdelante( altaLista *l, void *dato ){
-	nodo *nuevoNodo = nodoCrear( dato );
-	nodo *primerNodo = l->primero;
-	if( primerNodo == NULL )
-		l->ultimo = nuevoNodo;
-	else
-		primerNodo->anterior = nuevoNodo;
-		nuevoNodo->siguiente = primerNodo;
-	l->primero = nuevoNodo;
 }
 
 int main (void){
@@ -133,6 +133,8 @@ int main (void){
 
 	e1 = estudianteCrear("Ivan", "ASDF", 21);
 	insertarOrdenado(l, e1, (tipoFuncionCompararDato) menorEstudiante);
+
+	altaListaImprimir(l, "output.txt", (tipoFuncionImprimirDato) estudianteImprimir);
 
 	return 0;
 }

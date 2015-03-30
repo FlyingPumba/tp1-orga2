@@ -29,6 +29,8 @@
 	extern malloc
 	extern free
 	extern fprintf
+	extern fopen
+	extern fclose
 
 ; /** DEFINES **/
 	%define NULL 	0
@@ -56,7 +58,9 @@ section .rodata
 
 section .data
 
-	formato_estudiante_imprimir: DB "%s", 10, 9, "%s", 10, 9, "%d", 10
+	formato_estudiante_imprimir: DB "%s", 10, 9, "%s", 10, 9, "%d", 10, 0
+	fopen_append: DB "a+", 0
+	formato_lista_vacia: DB "<vacia>", 10, 0
 
 section .text
 
@@ -201,6 +205,7 @@ section .text
 		mov file, rsi
 
 		;fprintf (file, formato_estudiante_imprimir, e.nombre, e.grupo, e.edad);
+		xor rax, rax ; en rax cantidad de floats a imprimir
 		mov rdi, file
 		mov rsi, formato_estudiante_imprimir
 		mov rdx, e
@@ -279,8 +284,49 @@ section .text
 		; COMPLETAR AQUI EL CODIGO
 
 	; void altaListaImprimir( altaLista *l, char *archivo, tipoFuncionImprimirDato f )
+	%define nodo_actual [rbp-8]
+	%define file [rbp-16]
+	%define f_imprimir [rbp-24]
 	altaListaImprimir:
-		; COMPLETAR AQUI EL CODIGO
+		push rbp
+		mov rbp, rsp
+		sub rsp, 24
+		; ****************
+		mov rdi, [rdi + OFFSET_PRIMERO]
+		mov nodo_actual, rdi ; guardo el primer nodo de la lista
+		mov f_imprimir, rdx ; guardo funcion para imprimir dato
+
+		mov rdi, rsi
+		mov rsi, fopen_append
+		call fopen
+		mov file, rax ; guardo puntero a file
+
+		mov rdi, nodo_actual
+		cmp rdi, NULL; verifico si la lista esta vacia
+		je altaListaImprimir_vacia
+
+	altaListaImprimir_ciclo: ; rdi esta en nodo_actual
+		mov rdi, [rdi + OFFSET_DATO]
+		mov rsi, file
+		call f_imprimir
+
+		mov rdi, nodo_actual
+		mov rdi, [rdi + OFFSET_SIGUIENTE]
+		cmp rdi, NULL; verifico si llegamos al final de la lista
+		je altaListaImprimir_fin
+		jmp altaListaImprimir_ciclo
+	altaListaImprimir_vacia:
+		xor rax, rax ; en rax cantidad de floats a imprimir
+		mov rdi, file
+		mov rsi, formato_lista_vacia
+		call fprintf
+		; ****************
+	altaListaImprimir_fin:
+		mov rdi, file
+		call fclose ; cierro el archivo
+		add rsp, 24
+		pop rbp
+		ret
 
 
 ;/** FUNCIONES AVANZADAS **/

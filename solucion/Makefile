@@ -16,4 +16,5 @@ all: tester main
 
 clean:
 	rm -f *.o
+	rm -f *.txt
 	rm -f main tester
