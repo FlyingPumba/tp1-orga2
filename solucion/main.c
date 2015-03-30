@@ -132,7 +132,16 @@ int main (void){
 	altaLista *l = altaListaCrear();
 
 	e1 = estudianteCrear("Ivan", "ASDF", 21);
+	// l: e1
 	insertarOrdenado(l, e1, (tipoFuncionCompararDato) menorEstudiante);
+
+	e2 = estudianteCrear("Gabriel", "OTRO", 21);
+	// l: e2, e1
+	insertarOrdenado(l, e2, (tipoFuncionCompararDato) menorEstudiante);
+
+	e3 = estudianteCrear("Ivan", "ASDF", 22);
+	// l: e2, e1, e3
+	insertarOrdenado(l, e3, (tipoFuncionCompararDato) menorEstudiante);
 
 	altaListaImprimir(l, "output.txt", (tipoFuncionImprimirDato) estudianteImprimir);
 

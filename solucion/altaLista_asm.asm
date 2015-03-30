@@ -314,6 +314,7 @@ section .text
 		mov rdi, [rdi + OFFSET_SIGUIENTE]
 		cmp rdi, NULL; verifico si llegamos al final de la lista
 		je altaListaImprimir_fin
+		mov nodo_actual, rdi
 		jmp altaListaImprimir_ciclo
 	altaListaImprimir_vacia:
 		xor rax, rax ; en rax cantidad de floats a imprimir
