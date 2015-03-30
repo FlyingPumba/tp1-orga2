@@ -6,6 +6,7 @@ extern unsigned char string_longitud( char *s );
 extern char *string_copiar( char *s );
 extern bool string_menor( char *s1, char *s2 );
 extern bool menorEstudiante( estudiante *s1, estudiante *s2 );
+extern void insertarAdelante( altaLista *l, void *dato );
 
 /** Funciones de estudiante **/
 extern estudiante *estudianteCrear( char *nombre, char *grupo, unsigned int edad );
@@ -35,17 +36,6 @@ void  sinMayusculas( char* s) {
 			s[i] = s[i] + 32;
 		}
 	}
-}
-
-void insertarAdelante( altaLista *l, void *dato ){
-	nodo *nuevoNodo = nodoCrear( dato );
-	nodo *primerNodo = l->primero;
-	if( primerNodo == NULL )
-		l->ultimo = nuevoNodo;
-	else
-		primerNodo->anterior = nuevoNodo;
-		nuevoNodo->siguiente = primerNodo;
-	l->primero = nuevoNodo;
 }
 
 void insertarOrdenado( altaLista *l, void *dato, tipoFuncionCompararDato f ) {

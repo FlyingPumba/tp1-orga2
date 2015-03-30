@@ -22,6 +22,7 @@
 	global string_longitud
 	global string_copiar
 	global string_menor
+	global insertarAdelante
 
 ; YA IMPLEMENTADAS EN C
 	extern string_iguales
@@ -475,5 +476,37 @@ section .text
 		mov rax, QWORD FALSE
 		; ****************
 	fin_string_menor:
+		pop rbp
+		ret
+
+	; void insertarAdelante( altaLista *l, void *dato )
+	%define dir_lista [rbp-8]
+	insertarAdelante:
+		push rbp
+		mov rbp, rsp
+		sub rsp, 8
+		; ****************
+		mov dir_lista, rdi
+
+		mov rdi, rsi
+		call nodoCrear ; deja en rax la dir del nuevo nodo
+
+		mov rdi, dir_lista
+		mov rdi, [rdi + OFFSET_PRIMERO] ; puntero al primer nodo
+		cmp rdi, NULL
+		je insertarAdelante_vacia ; l->primero == NULL
+		jmp insertarAdelante_no_vacia ; l->primero != NULL
+	insertarAdelante_vacia:
+		mov rdi, dir_lista
+		mov [rdi + OFFSET_ULTIMO], rax ; l->ultimo = nuevoNodo;
+		jmp insertarAdelante_fin
+	insertarAdelante_no_vacia:
+		mov [rax + OFFSET_SIGUIENTE], rdi ; (nuevoNodo)->siguiente = l->primero;
+		mov [rdi + OFFSET_ANTERIOR], rax ; (l->primero)->anterior = nuevoNodo;
+	insertarAdelante_fin:
+		mov rdi, dir_lista
+		mov [rdi + OFFSET_PRIMERO], rax ; l->primero = nuevoNodo
+		; ****************
+		add rsp, 8
 		pop rbp
 		ret
