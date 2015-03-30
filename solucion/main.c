@@ -23,7 +23,6 @@ extern void altaListaBorrar( altaLista *l, tipoFuncionBorrarDato f );
 extern void altaListaImprimir( altaLista *l, char *archivo, tipoFuncionImprimirDato f );
 
 /** Funciones Avanzadas **/
-
 extern float edadMedia( altaLista *l );
 extern void insertarOrdenado( altaLista *l, void *dato, tipoFuncionCompararDato f );
 extern void filtrarAltaLista( altaLista *l, tipoFuncionCompararDato f, void *datoCmp );
@@ -34,36 +33,6 @@ void  sinMayusculas( char* s) {
 	for(int i = 0; i<=n; i++){
 		if(s[i] >= 65 && s[i]<=90) {
 			s[i] = s[i] + 32;
-		}
-	}
-}
-
-void insertarOrdenado( altaLista *l, void *dato, tipoFuncionCompararDato f ) {
-	if (l->primero == NULL) {
-		nodo *nuevo = nodoCrear(dato);
-		l->primero = nuevo;
-		l->ultimo = nuevo;
-	} else {
-		nodo *last = l->primero;
-		while (last != NULL && f(last->dato, dato)) {
-			last = last->siguiente;
-		}
-		if (last == NULL) {
-			// el nuevo nodo va al final de la lista
-			insertarAtras(l, dato);
-		} else if (last->anterior == NULL) {
-			// el nuevo nodo va al principio de la lista
-			insertarAdelante(l, dato);
-		} else {
-			// el nuevo nodo va adelante de *last
-			nodo *nuevo = nodoCrear(dato);
-			nodo *aux = last->anterior;
-			// arreglo atras de nuevo
-			aux->siguiente = nuevo;
-			nuevo->anterior = aux;
-			// arreglo adelante de nuevo
-			last->anterior = nuevo;
-			nuevo->siguiente = last;
 		}
 	}
 }

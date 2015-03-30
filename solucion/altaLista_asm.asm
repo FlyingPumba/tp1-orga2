@@ -15,7 +15,7 @@
 
 ; AVANZADAS
 	global edadMedia
-	;global insertarOrdenado
+	global insertarOrdenado
 	global filtrarAltaLista
 
 ; AUXILIARES
@@ -377,8 +377,74 @@ section .text
 		; COMPLETAR AQUI EL CODIGO
 
 	; void insertarOrdenado( altaLista *l, void *dato, tipoFuncionCompararDato f )
+	%define dir_lista [rbp-8]
+	%define dato [rbp-16]
+	%define f_comparar [rbp-24]
+	%define last_nodo_aux [rbp-32]
 	insertarOrdenado:
-		; COMPLETAR AQUI EL CODIGO
+		push rbp
+		mov rbp, rsp
+		sub rsp, 32
+		; ****************
+		mov dir_lista, rdi
+		mov dato, rsi
+		mov f_comparar, rdx
+
+		mov rdi, dir_lista
+		mov rdi, [rdi + OFFSET_PRIMERO] ; puntero al primer nodo
+		cmp rdi, NULL
+		je insertarOrdenado_al_final ; l->primero == NULL
+		jmp insertarOrdenado_no_vacia ; l->primero != NULL
+	insertarOrdenado_no_vacia:
+		mov last_nodo_aux, rdi
+		; empezamos en l->principio
+		; y avanzamos hasta que last == NULL o f_comparar(last->dato, dato) == FALSE
+	insertarOrdenado_ciclo:
+		cmp QWORD last_nodo_aux, NULL; last == NULL ?
+		je insertarOrdenado_fin_ciclo
+		mov rdi, last_nodo_aux
+		mov rdi, [rdi + OFFSET_DATO] ; rdi = last_nodo_aux->dato
+		mov rsi, dato
+		call f_comparar; f_comparar(last->dato, dato) == FALSE ?
+		cmp rax, FALSE
+		je insertarOrdenado_fin_ciclo
+		; si llegamos aca, todavia tenemos que seguir avanzando
+		mov rdi, last_nodo_aux
+		mov rdi, [rdi + OFFSET_SIGUIENTE]
+		mov last_nodo_aux, rdi; last_nodo_aux = last_nodo_aux->siguiente
+		jmp insertarOrdenado_ciclo
+	insertarOrdenado_fin_ciclo:
+		cmp QWORD last_nodo_aux, NULL ; last == NULL ?
+		je insertarOrdenado_al_final ; entonces llegamos al final de la lista
+		mov rsi, last_nodo_aux
+		cmp QWORD [rsi + OFFSET_ANTERIOR], NULL ; last->anterior == NULL ?
+		je insertarOrdenado_al_principio ; entonces tenemos que insertar al principio
+		jmp insertarOrdenado_al_medio ; sino no pasa nada de esto, hay que insertar en el medio
+	insertarOrdenado_al_final:
+		mov rdi, dir_lista
+		mov rsi, dato
+		call insertarAtras
+		jmp insertarOrdenado_fin
+	insertarOrdenado_al_principio:
+		mov rdi, dir_lista
+		mov rsi, dato
+		call insertarAdelante
+		jmp insertarOrdenado_fin
+	insertarOrdenado_al_medio:
+		mov rdi, dato
+		call nodoCrear ; creo un nuevo nodo con el dato
+		mov rdi, last_nodo_aux
+		; arreglo hacia atras
+		mov rsi, [rdi + OFFSET_ANTERIOR] ; rsi: last->anterior
+		mov [rsi + OFFSET_SIGUIENTE], rax ; rsi->siguiente = nuevo
+		mov [rax + OFFSET_ANTERIOR], rsi ; nuevo->anterior = rsi
+		; arreglo hacia adelante
+		mov [rdi + OFFSET_ANTERIOR], rax ; last->anterior = nuevo
+		mov [rax + OFFSET_SIGUIENTE], rdi ; nuevo->anterior = rsi
+		; ****************
+	insertarOrdenado_fin:
+		add rsp, 32
+		pop rbp
 
 	; void filtrarAltaLista( altaLista *l, tipoFuncionCompararDato f, void *datoCmp )
 	filtrarAltaLista:
