@@ -95,9 +95,7 @@ void funciones_lista() {
 	altaLista *l = altaListaCrear();
 
 	// l: <vacia>
-	// BUG: imprimir varias veces anda mal
-	//		(imprime casi todo bien, pero hay algunos caracteres raros dando vueltas)
-	//altaListaImprimir(l, "output.txt", (tipoFuncionImprimirDato) estudianteImprimir);
+	altaListaImprimir(l, "output.txt", (tipoFuncionImprimirDato) estudianteImprimir);
 
 	estudiante* e1 = estudianteCrear("Ivan", "ASDF", 21);
 	// l: e1
