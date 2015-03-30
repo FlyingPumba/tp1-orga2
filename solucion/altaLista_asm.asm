@@ -15,7 +15,7 @@
 
 ; AVANZADAS
 	global edadMedia
-	global insertarOrdenado
+	;global insertarOrdenado
 	global filtrarAltaLista
 
 ; AUXILIARES

@@ -21,6 +21,12 @@ extern altaLista *altaListaCrear( void );
 extern void altaListaBorrar( altaLista *l, tipoFuncionBorrarDato f );
 extern void altaListaImprimir( altaLista *l, char *archivo, tipoFuncionImprimirDato f );
 
+/** Funciones Avanzadas **/
+
+extern float edadMedia( altaLista *l );
+extern void insertarOrdenado( altaLista *l, void *dato, tipoFuncionCompararDato f );
+extern void filtrarAltaLista( altaLista *l, tipoFuncionCompararDato f, void *datoCmp );
+
 // ejemplo de tipoFuncionModificarString
 void  sinMayusculas( char* s) {
 	int n = string_longitud(s);
@@ -29,6 +35,47 @@ void  sinMayusculas( char* s) {
 			s[i] = s[i] + 32;
 		}
 	}
+}
+
+void insertarOrdenado( altaLista *l, void *dato, tipoFuncionCompararDato f ) {
+	if (l->primero == NULL) {
+		nodo *nuevo = nodoCrear(dato);
+		l->primero = nuevo;
+		l->ultimo = nuevo;
+	} else {
+		nodo *last = l->primero;
+		while (last != NULL && f(last->dato, dato)) {
+			last = last->siguiente;
+		}
+		if (last == NULL) {
+			// el nuevo nodo va al final de la lista
+			insertarAtras(l, dato);
+		} else if (last->anterior == NULL) {
+			// el nuevo nodo va al principio de la lista
+			insertarAdelante(l, dato);
+		} else {
+			// el nuevo nodo va adelante de *last
+			nodo *nuevo = nodoCrear(dato);
+			nodo *aux = last->anterior;
+			// arreglo atras de nuevo
+			aux->siguiente = nuevo;
+			nuevo->anterior = aux;
+			// arreglo adelante de nuevo
+			last->anterior = nuevo;
+			nuevo->siguiente = last;
+		}
+	}
+}
+
+void insertarAdelante( altaLista *l, void *dato ){
+	nodo *nuevoNodo = nodoCrear( dato );
+	nodo *primerNodo = l->primero;
+	if( primerNodo == NULL )
+		l->ultimo = nuevoNodo;
+	else
+		primerNodo->anterior = nuevoNodo;
+		nuevoNodo->siguiente = primerNodo;
+	l->primero = nuevoNodo;
 }
 
 int main (void){
@@ -82,6 +129,10 @@ int main (void){
 	nodoBorrar(n, (tipoFuncionBorrarDato)estudianteBorrar);
 
 	// probando funciones de altaLista
-	altaLista* l = altaListaCrear();
+	altaLista *l = altaListaCrear();
+
+	e1 = estudianteCrear("Ivan", "ASDF", 21);
+	insertarOrdenado(l, e1, (tipoFuncionCompararDato) menorEstudiante);
+
 	return 0;
 }
