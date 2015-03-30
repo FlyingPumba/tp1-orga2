@@ -37,8 +37,7 @@ void  sinMayusculas( char* s) {
 	}
 }
 
-int main (void){
-	// probando funciones auxiliares
+void funciones_auxiliares() {
 	unsigned char a = string_longitud("abcd");
 	unsigned char b = string_longitud("");
 	printf("%d, %d\n", a, b);
@@ -55,19 +54,20 @@ int main (void){
 	bool b4 = string_menor("caZa", "casa"); // true
 	bool b5 = string_menor("hola", "hola"); // false
 	printf("%d, %d, %d, %d, %d\n", b1, b2, b3, b4, b5);
+}
 
-	// probando funcinoes de estudiante
+void funciones_estudiante() {
 	estudiante* e1 = estudianteCrear("Ivan", "ASDF", 21);
 	printf("%s, %d - %s  \n", e1->nombre, e1->edad, e1->grupo);
 
 	estudiante* e2 = estudianteCrear("Ivan", "ASDF", 20);
 	estudiante* e3 = estudianteCrear("Gabriel", "ASDF", 22);
 
-	b1 = menorEstudiante(e1, e1); // true
-	b2 = menorEstudiante(e1, e2); // false
-	b3 = menorEstudiante(e1, e3); // false
-	b4 = menorEstudiante(e3, e1); // true
-	b5 = menorEstudiante(e2, e1); // true
+	bool b1 = menorEstudiante(e1, e1); // true
+	bool b2 = menorEstudiante(e1, e2); // false
+	bool b3 = menorEstudiante(e1, e3); // false
+	bool b4 = menorEstudiante(e3, e1); // true
+	bool b5 = menorEstudiante(e2, e1); // true
 	printf("%d, %d, %d, %d, %d\n", b1, b2, b3, b4, b5);
 
 	estudianteBorrar(e2);
@@ -76,9 +76,12 @@ int main (void){
 	printf("%s, %d - %s  \n", e1->nombre, e1->edad, e1->grupo);
 
 	estudianteImprimir(e3, stdout);
+	estudianteBorrar(e1);
 	estudianteBorrar(e3);
+}
 
-	// probando funciones de nodo
+void funciones_nodo() {
+	estudiante* e1 = estudianteCrear("Ivan", "ASDF", 21);
 	nodo *n = nodoCrear(e1);
 	void *dato = n->dato;
 	estudiante *e_aux = (estudiante*)dato;
@@ -86,8 +89,9 @@ int main (void){
 
 	// no hace falta llamar a estudianteBorrar(e1); ya que lo hace nodoBorrar
 	nodoBorrar(n, (tipoFuncionBorrarDato)estudianteBorrar);
+}
 
-	// probando funciones de altaLista
+void funciones_lista() {
 	altaLista *l = altaListaCrear();
 
 	// l: <vacia>
@@ -95,21 +99,54 @@ int main (void){
 	//		(imprime casi todo bien, pero hay algunos caracteres raros dando vueltas)
 	//altaListaImprimir(l, "output.txt", (tipoFuncionImprimirDato) estudianteImprimir);
 
-	e1 = estudianteCrear("Ivan", "ASDF", 21);
+	estudiante* e1 = estudianteCrear("Ivan", "ASDF", 21);
 	// l: e1
 	insertarOrdenado(l, e1, (tipoFuncionCompararDato) menorEstudiante);
 
-	e2 = estudianteCrear("Gabriel", "OTRO", 21);
+	estudiante* e2 = estudianteCrear("Gabriel", "OTRO", 21);
 	// l: e2, e1
 	insertarOrdenado(l, e2, (tipoFuncionCompararDato) menorEstudiante);
 
-	e3 = estudianteCrear("Ivan", "ASDF", 22);
+	estudiante* e3 = estudianteCrear("Ivan", "ASDF", 22);
 	// l: e2, e1, e3
 	insertarOrdenado(l, e3, (tipoFuncionCompararDato) menorEstudiante);
 
 	altaListaImprimir(l, "output.txt", (tipoFuncionImprimirDato) estudianteImprimir);
 
 	altaListaBorrar(l, (tipoFuncionBorrarDato) estudianteBorrar);
+}
+
+void funciones_avanzadas() {
+	altaLista *l = altaListaCrear();
+	estudiante* e1 = estudianteCrear("Ivan", "ASDF", 21);
+	insertarOrdenado(l, e1, (tipoFuncionCompararDato) menorEstudiante);
+	estudiante* e2 = estudianteCrear("Gabriel", "OTRO", 21);
+	insertarOrdenado(l, e2, (tipoFuncionCompararDato) menorEstudiante);
+	estudiante* e3 = estudianteCrear("Juan", "ASDF", 22);
+	insertarOrdenado(l, e3, (tipoFuncionCompararDato) menorEstudiante);
+
+	estudiante* e4 = estudianteCrear("Xilofon", "ASDF", 22);
+	filtrarAltaLista(l, (tipoFuncionCompararDato) menorEstudiante, e4);
+	// filtrar la lista por e4 deberia dejarla como estaba, ya que todos tiene nombre menor
+	altaListaImprimir(l, "output.txt", (tipoFuncionImprimirDato) estudianteImprimir);
+
+	e4 = estudianteCrear("Gaspar", "ASDF", 22);
+	filtrarAltaLista(l, (tipoFuncionCompararDato) menorEstudiante, e4);
+	// deberian quedar en la lista solo e2
+	altaListaImprimir(l, "output.txt", (tipoFuncionImprimirDato) estudianteImprimir);
+
+	e4 = estudianteCrear("Anabella", "ASDF", 22);
+	filtrarAltaLista(l, (tipoFuncionCompararDato) menorEstudiante, e4);
+	// ahora l deberia quedar vacia
+	altaListaImprimir(l, "output.txt", (tipoFuncionImprimirDato) estudianteImprimir);
+}
+
+int main (void) {
+	funciones_auxiliares();
+	funciones_estudiante();
+	funciones_nodo();
+	funciones_lista();
+	funciones_avanzadas();
 
 	return 0;
 }

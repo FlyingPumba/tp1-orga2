@@ -394,8 +394,7 @@ section .text
 		mov rdi, [rdi + OFFSET_PRIMERO] ; puntero al primer nodo
 		cmp rdi, NULL
 		je insertarOrdenado_al_final ; l->primero == NULL
-		jmp insertarOrdenado_no_vacia ; l->primero != NULL
-	insertarOrdenado_no_vacia:
+		; l->primero != NULL
 		mov last_nodo_aux, rdi
 		; empezamos en l->principio
 		; y avanzamos hasta que last == NULL o f_comparar(last->dato, dato) == FALSE
@@ -445,11 +444,85 @@ section .text
 	insertarOrdenado_fin:
 		add rsp, 32
 		pop rbp
+		ret
 
 	; void filtrarAltaLista( altaLista *l, tipoFuncionCompararDato f, void *datoCmp )
+	%define dir_lista [rbp-8]
+	%define dato_comparar [rbp-16]
+	%define f_comparar [rbp-24]
+	%define last_nodo_aux [rbp-32]
 	filtrarAltaLista:
-		; COMPLETAR AQUI EL CODIGO
+		push rbp
+		mov rbp, rsp
+		sub rsp, 32
+		; ****************
+		mov dir_lista, rdi
+		mov f_comparar, rsi
+		mov dato_comparar, rdx
 
+		mov rdi, dir_lista
+		mov rdi, [rdi + OFFSET_PRIMERO] ; puntero al primer nodo
+		cmp QWORD rdi, NULL
+		je filtrarAltaLista_fin ; la lista esta vacia, no hay nada que filtrar
+
+		mov last_nodo_aux, rdi
+		; empezamos en l->principio
+		; y avanzamos hasta que last == NULL
+	filtrarAltaLista_ciclo:
+		cmp QWORD last_nodo_aux, NULL; last == NULL ?
+		je filtrarAltaLista_fin
+
+		mov rdi, last_nodo_aux
+		mov rdi, [rdi + OFFSET_DATO] ; rdi = last_nodo_aux->dato
+		mov rsi, dato_comparar
+		call f_comparar; f_comparar(last->dato, dato) == TRUE ?
+		cmp rax, TRUE ; si da TRUE, lo dejamos como esta y avanzamos
+		je filtrarAltaLista_ciclo_avanzar
+
+		mov rdi, last_nodo_aux
+		mov rdx, [rdi + OFFSET_ANTERIOR]
+		mov rcx, [rdi + OFFSET_SIGUIENTE]
+
+		cmp rdx, NULL
+		je actual_es_primer_elemento_en_lista
+		cmp rcx, NULL
+		je actual_es_ultimo_elemento_en_lista
+
+		mov [rdx + OFFSET_SIGUIENTE], rcx
+		mov [rcx + OFFSET_ANTERIOR], rdx
+		jmp borrar_actual
+	actual_es_ultimo_elemento_en_lista:
+		mov r8, dir_lista
+		mov [r8 + OFFSET_ULTIMO], rdx
+		mov QWORD [rdx + OFFSET_SIGUIENTE], NULL
+		jmp borrar_actual
+	actual_es_primer_elemento_en_lista:
+		cmp rcx, NULL
+		je actual_es_unico_elemento_en_lista
+		mov r8, dir_lista
+		mov [r8 + OFFSET_PRIMERO], rcx
+		mov QWORD [rcx + OFFSET_ANTERIOR], NULL
+		jmp borrar_actual
+	actual_es_unico_elemento_en_lista:
+		mov r8, dir_lista
+		mov QWORD [r8 + OFFSET_PRIMERO], NULL
+		mov QWORD [r8 + OFFSET_ULTIMO], NULL
+	borrar_actual:
+		mov rdi, last_nodo_aux
+		mov last_nodo_aux, rcx
+		mov rsi, estudianteBorrar
+		call nodoBorrar
+		jmp filtrarAltaLista_ciclo
+	filtrarAltaLista_ciclo_avanzar:
+		mov rdi, last_nodo_aux
+		mov rdi, [rdi + OFFSET_SIGUIENTE]
+		mov last_nodo_aux, rdi; last_nodo_aux = last_nodo_aux->siguiente
+		jmp filtrarAltaLista_ciclo
+		; ****************
+	filtrarAltaLista_fin:
+		add rsp, 32
+		pop rbp
+		ret
 
 	;/** FUNCIONES AUXILIARES **/
 ;----------------------------------------------------------------------------------------------
