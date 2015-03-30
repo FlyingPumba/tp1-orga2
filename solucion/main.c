@@ -131,6 +131,11 @@ int main (void){
 	// probando funciones de altaLista
 	altaLista *l = altaListaCrear();
 
+	// l: <vacia>
+	// BUG: imprimir varias veces anda mal
+	//		(imprime casi todo bien, pero hay algunos caracteres raros dando vueltas)
+	//altaListaImprimir(l, "output.txt", (tipoFuncionImprimirDato) estudianteImprimir);
+
 	e1 = estudianteCrear("Ivan", "ASDF", 21);
 	// l: e1
 	insertarOrdenado(l, e1, (tipoFuncionCompararDato) menorEstudiante);
@@ -144,6 +149,8 @@ int main (void){
 	insertarOrdenado(l, e3, (tipoFuncionCompararDato) menorEstudiante);
 
 	altaListaImprimir(l, "output.txt", (tipoFuncionImprimirDato) estudianteImprimir);
+
+	altaListaBorrar(l, (tipoFuncionBorrarDato) estudianteBorrar);
 
 	return 0;
 }

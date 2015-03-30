@@ -280,8 +280,46 @@ section .text
 		ret
 
 	; void altaListaBorrar( altaLista *l, tipoFuncionBorrarDato f )
+	%define dir_lista [rbp-8]
+	%define nodo_actual [rbp-16]
+	%define f_borrar [rbp-24]
 	altaListaBorrar:
-		; COMPLETAR AQUI EL CODIGO
+		push rbp
+		mov rbp, rsp
+		sub rsp, 24
+		; ****************
+		mov dir_lista, rdi ; guardo la dir de la lista
+		mov rdi, [rdi + OFFSET_PRIMERO]
+		mov nodo_actual, rdi ; guardo el primer nodo de la lista
+		mov f_borrar, rsi ; guardo funcion para imprimir dato
+
+		mov rdi, nodo_actual
+		cmp rdi, NULL; verifico si la lista esta vacia
+		je altaListaBorrar_fin
+
+	altaListaBorrar_ciclo: ; rdi esta en nodo_actual
+		mov rdi, [rdi + OFFSET_DATO]
+		call f_borrar ; borro el dato
+
+		mov rsi, nodo_actual
+		mov rdi, nodo_actual
+		mov rsi, [rsi + OFFSET_SIGUIENTE] ; me guardo el puntero al siguiente nodo
+		mov nodo_actual, rsi
+
+		call free ; borro el nodo
+
+		mov rdi, nodo_actual
+		cmp rdi, NULL; verifico si llegamos al final de la lista
+		je altaListaBorrar_fin
+		jmp altaListaBorrar_ciclo
+
+	altaListaBorrar_fin:
+		mov rdi, dir_lista
+		call free ; borro la lista
+		; ****************
+		add rsp, 24
+		pop rbp
+		ret
 
 	; void altaListaImprimir( altaLista *l, char *archivo, tipoFuncionImprimirDato f )
 	%define nodo_actual [rbp-8]
