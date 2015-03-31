@@ -130,16 +130,21 @@ void funciones_avanzadas() {
 	filtrarAltaLista(l, (tipoFuncionCompararDato) menorEstudiante, e4);
 	// filtrar la lista por e4 deberia dejarla como estaba, ya que todos tiene nombre menor
 	altaListaImprimir(l, "output.txt", (tipoFuncionImprimirDato) estudianteImprimir);
+	estudianteBorrar(e4);
 
 	e4 = estudianteCrear("Gaspar", "ASDF", 22);
 	filtrarAltaLista(l, (tipoFuncionCompararDato) menorEstudiante, e4);
 	// deberian quedar en la lista solo e2
 	altaListaImprimir(l, "output.txt", (tipoFuncionImprimirDato) estudianteImprimir);
+	estudianteBorrar(e4);
 
 	e4 = estudianteCrear("Anabella", "ASDF", 22);
 	filtrarAltaLista(l, (tipoFuncionCompararDato) menorEstudiante, e4);
 	// ahora l deberia quedar vacia
 	altaListaImprimir(l, "output.txt", (tipoFuncionImprimirDato) estudianteImprimir);
+	estudianteBorrar(e4);
+
+	altaListaBorrar(l, (tipoFuncionBorrarDato) estudianteBorrar);
 }
 
 int main (void) {
