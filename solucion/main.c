@@ -30,10 +30,12 @@ extern void filtrarAltaLista( altaLista *l, tipoFuncionCompararDato f, void *dat
 // ejemplo de tipoFuncionModificarString
 void  sinMayusculas( char* s) {
 	int n = string_longitud(s);
-	for(int i = 0; i<=n; i++){
-		if(s[i] >= 65 && s[i]<=90) {
-			s[i] = s[i] + 32;
+	for(int i = 0; i < n; i++){
+		short c = s[i];
+		if(c >= 65 && c <= 90) {
+			c = c + 32;
 		}
+		s[i] = c;
 	}
 }
 

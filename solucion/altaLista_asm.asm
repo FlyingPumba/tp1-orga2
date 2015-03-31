@@ -156,10 +156,10 @@ section .text
 
 		mov rdi, e1
 		mov rsi, e2
-		mov rdi, [rdi + OFFSET_EDAD]
-		mov rsi, [rsi + OFFSET_EDAD]
+		mov edi, [rdi + OFFSET_EDAD]
+		mov esi, [rsi + OFFSET_EDAD]
 
-		cmp rdi, rsi
+		cmp edi, esi
 		jg menorEstudiante_false ;  e1.nombre == e2.nombre y  e1.edad > e2.edad
 	menorEstudiante_true:
 		mov rax, QWORD TRUE
@@ -206,7 +206,6 @@ section .text
 		mov file, rsi
 
 		;fprintf (file, formato_estudiante_imprimir, e.nombre, e.grupo, e.edad);
-		xor rax, rax ; en rax cantidad de floats a imprimir
 		mov rdi, file
 		mov rsi, formato_estudiante_imprimir
 		mov rdx, e
@@ -214,7 +213,10 @@ section .text
 		mov rcx, e
 		mov rcx, [rcx + OFFSET_GRUPO]
 		mov r8, e
-		mov r8, [r8 + OFFSET_EDAD]
+		mov eax, [r8 + OFFSET_EDAD]
+		xor r8, r8
+		mov r8, rax
+		xor rax, rax ; en rax cantidad de floats a imprimir
 		call fprintf
 		; ****************
 		add rsp, 16
@@ -391,7 +393,7 @@ section .text
 
 		mov rsi, rdi
 		mov rsi, [rsi + OFFSET_DATO]
-		mov rsi, [rsi + OFFSET_EDAD]
+		mov esi, [rsi + OFFSET_EDAD]
 		add eax, esi
 		add rcx, QWORD 1
 
@@ -576,6 +578,7 @@ section .text
 		jmp ciclo_string_longitud
 		; ****************
 	fin_string_longitud:
+		add al, 1 ; incremento en 1 para tener en cuenta la terminacion en NULL
 		pop rbp
 		ret
 
