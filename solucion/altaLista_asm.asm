@@ -227,24 +227,23 @@ section .text
 ;--------------------------------------------------------------------------------------------------------
 
 	; nodo *nodoCrear( void *dato )
-	%define dato [rbp-8]
 	nodoCrear:
 		push rbp
 		mov rbp, rsp
+		push rbx
 		sub rsp, 8
 		; ****************
-		mov dato, QWORD rdi ; salvo los parametros antes de hacer la llamada a malloc
+		mov rbx, rdi ; salvo los parametros antes de hacer la llamada a malloc
 
 		mov rdi, NODO_SIZE ; pido memoria para un nuevo nodo_t
 		call malloc
 
-		mov rdi, rax
-		mov QWORD [rdi + OFFSET_SIGUIENTE], NULL ; NULL para *siguiente
-		mov QWORD [rdi + OFFSET_ANTERIOR], NULL ; NULL para *anterior
-		mov QWORD rcx, dato
-		mov [rdi + OFFSET_DATO], rcx ; copio el puntero al dato
+		mov QWORD [rax + OFFSET_SIGUIENTE], NULL ; NULL para *siguiente
+		mov QWORD [rax + OFFSET_ANTERIOR], NULL ; NULL para *anterior
+		mov [rax + OFFSET_DATO], rbx ; copio el puntero al dato
 		; ****************
 		add rsp, 8
+		pop rbx
 		pop rbp
 		ret
 
@@ -606,10 +605,10 @@ section .text
 		je fin_string_copiar
 
 		mov rdi, dir_orig
-		add di, cx ; rdi <- *s + i
+		add rdi, rcx ; rdi <- *s + i
 
 		mov rax, dir_nueva
-		add al, cl ; rax <- *nueva + i
+		add rax, rcx ; rax <- *nueva + i
 
 		mov dl, BYTE [rdi]
 		mov BYTE [rax], dl ; copio un char
