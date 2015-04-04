@@ -127,7 +127,7 @@ section .text
 		pop rbp
 		ret
 
-	; bool menorEstudiante( estudiante *e1, estudiante *e2 ){
+	; bool menorEstudiante( estudiante *e1, estudiante *e2 )
 	%define e1 [rbp-8]
 	%define e2 [rbp-16]
 	menorEstudiante:
@@ -160,7 +160,8 @@ section .text
 		mov esi, [rsi + OFFSET_EDAD]
 
 		cmp edi, esi
-		jg menorEstudiante_false ;  e1.nombre == e2.nombre y  e1.edad > e2.edad
+		jl menorEstudiante_true ;  e1.nombre == e2.nombre y  e1.edad < e2.edad
+		jmp menorEstudiante_false
 	menorEstudiante_true:
 		mov rax, QWORD TRUE
 		jmp fin_menorEstudiante
