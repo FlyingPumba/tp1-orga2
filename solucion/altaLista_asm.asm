@@ -657,33 +657,32 @@ section .text
 		ret
 
 	; void insertarAdelante( altaLista *l, void *dato )
-	%define dir_lista [rbp-8]
 	insertarAdelante:
 		push rbp
 		mov rbp, rsp
-		sub rsp, 8
+        push rbx
 		; ****************
-		mov dir_lista, rdi
+		mov rbx, rdi ; rbx <- &lista
 
-		mov rdi, rsi
+		mov rdi, rsi ; rdi <- &dato
 		call nodoCrear ; deja en rax la dir del nuevo nodo
 
-		mov rdi, dir_lista
+		mov rdi, rbx ; rdi <- &lista
 		mov rdi, [rdi + OFFSET_PRIMERO] ; puntero al primer nodo
 		cmp rdi, NULL
 		je insertarAdelante_vacia ; l->primero == NULL
 		jmp insertarAdelante_no_vacia ; l->primero != NULL
 	insertarAdelante_vacia:
-		mov rdi, dir_lista
+		mov rdi, rbx ; rdi <- &lista
 		mov [rdi + OFFSET_ULTIMO], rax ; l->ultimo = nuevoNodo;
 		jmp insertarAdelante_fin
 	insertarAdelante_no_vacia:
 		mov [rax + OFFSET_SIGUIENTE], rdi ; (nuevoNodo)->siguiente = l->primero;
 		mov [rdi + OFFSET_ANTERIOR], rax ; (l->primero)->anterior = nuevoNodo;
 	insertarAdelante_fin:
-		mov rdi, dir_lista
+		mov rdi, rbx ; rdi <- &lista
 		mov [rdi + OFFSET_PRIMERO], rax ; l->primero = nuevoNodo
 		; ****************
-		add rsp, 8
+		pop rbx
 		pop rbp
 		ret
