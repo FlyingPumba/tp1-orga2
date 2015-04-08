@@ -16,4 +16,5 @@ all: tester main
 
 clean:
 	rm -f *.o
+	rm -f salida.caso1.txt salida.caso2.txt salida.casoN.txt
 	rm -f main tester
