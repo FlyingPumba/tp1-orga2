@@ -180,24 +180,24 @@ section .text
 		ret
 
 	; void estudianteConFormato( estudiante *e, tipoFuncionModificarString f )
-	%define e [rbp-8]
-	%define f [rbp-16]
 	estudianteConFormato:
 		push rbp
 		mov rbp, rsp
-		sub rsp, 16
+        push rbx
+        push r12
 		; ****************
-		mov e, rdi
-		mov f, rsi
+		mov rbx, rdi ; rbx <- &e
+		mov r12, rsi ; r12 <- f
 
 		mov rdi, [rdi + OFFSET_NOMBRE]
-		call f
+		call r12
 
-		mov rdi, e
+		mov rdi, rbx
 		mov rdi, [rdi + OFFSET_GRUPO]
-		call f
+		call r12
 		; ****************
-		add rsp, 16
+        pop r12
+        pop rbx
 		pop rbp
 		ret
 
