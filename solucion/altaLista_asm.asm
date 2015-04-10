@@ -108,24 +108,25 @@ section .text
 		ret
 
 	; void estudianteBorrar( estudiante *e );
-	%define dir_borrar [rbp-8]
 	estudianteBorrar:
 		push rbp
 		mov rbp, rsp
 		sub rsp, 8
+        push rbx
 		; ****************
-		mov dir_borrar, rdi ; guardo dir a borrar
+		mov rbx, rdi ; guardo dir a borrar
 
 		mov rdi, [rdi + OFFSET_NOMBRE]
 		call free ; libero la memoria que use para copiar el nombre
 
-		mov rdi, dir_borrar
+		mov rdi, rbx
 		mov rdi, [rdi + OFFSET_GRUPO]
 		call free ; libero la memoria que use para copiar el grupo
 
-		mov rdi, dir_borrar
+		mov rdi, rbx
 		call free ; libero la memoria que use almacenar la estructura estudiante
 		; ****************
+        pop rbx
 		add rsp, 8
 		pop rbp
 		ret
