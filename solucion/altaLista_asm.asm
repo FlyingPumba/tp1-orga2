@@ -255,20 +255,21 @@ section .text
 		ret
 
 	; void nodoBorrar( nodo *n, tipoFuncionBorrarDato f )
-	%define dir_borrar [rbp-8]
 	nodoBorrar:
 		push rbp
 		mov rbp, rsp
 		sub rsp, 8
+        push rbx
 		; ****************
-		mov dir_borrar, rdi ; guardo dir a borrar
+		mov rbx, rdi ; guardo dir a borrar
 
 		mov rdi, [rdi + OFFSET_DATO]
 		call rsi ; libero la memoria que use para el dato
 
-		mov rdi, dir_borrar
+		mov rdi, rbx
 		call free ; libero la memoria que use almacenar la estructura nodo
 		; ****************
+        pop rbx
 		add rsp, 8
 		pop rbp
 		ret
