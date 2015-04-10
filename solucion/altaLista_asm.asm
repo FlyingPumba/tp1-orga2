@@ -586,6 +586,7 @@ section .text
 	string_copiar:
 		push rbp
 		mov rbp, rsp
+        sub rsp, 8
         push rbx
         push r12
         push r13
@@ -623,6 +624,7 @@ section .text
         pop r13
         pop r12
         pop rbx
+        add rsp, 8
 		pop rbp
 		ret
 
