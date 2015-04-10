@@ -69,38 +69,41 @@ section .text
 ;---------------------------------------------------------------------------------------------------------------
 
 	; estudiante *estudianteCrear( char *nombre, char *grupo, unsigned int edad );
-	%define dir_nueva [rbp-8]
-	%define nombre [rbp-16]
-	%define edad [rbp-24]
-	%define grupo [rbp-32]
 	estudianteCrear:
 		push rbp
 		mov rbp, rsp
-		sub rsp, 32
+        push rbx
+        push r12
+        push r13
+        push r14
 		; ****************
-		mov nombre, QWORD rdi ; salvo los parametros antes de hacer la llamada a malloc
-		mov grupo, QWORD rsi
-		mov edad, rdx
+        ; salvo los parametros antes de hacer la llamada a malloc
+		mov r12, QWORD rdi ; r12 <- &nombre
+		mov r13, QWORD rsi ; r13 <- &grupo
+		mov r14, rdx ; r14 <- edad
 
 		mov rdi, ESTUDIANTE_SIZE ; pido memoria para un nuevo estudiante_t
 		call malloc
-		mov dir_nueva, rax
+		mov rbx, rax ; rbx <- dir para el nuevo estudiante
 
-		mov edi, DWORD edad
+		mov rdi, r14
 		mov [rax + OFFSET_EDAD], edi ; copio la edad
 
-		mov rdi, QWORD nombre
+		mov rdi, QWORD r12
 		call string_copiar
-		mov rdi, dir_nueva
+		mov rdi, rbx
 		mov [rdi + OFFSET_NOMBRE], rax ; copio el nombre
 
-		mov rdi, QWORD grupo
+		mov rdi, QWORD r13
 		call string_copiar
-		mov rdi, dir_nueva
+		mov rdi, rbx
 		mov [rdi + OFFSET_GRUPO], rax ; copio el grupo
 		; ****************
-		mov rax, dir_nueva
-		add rsp, 32
+		mov rax, rbx
+        pop r14
+        pop r13
+        pop r12
+        pop rbx
 		pop rbp
 		ret
 
