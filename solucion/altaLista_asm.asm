@@ -583,32 +583,32 @@ section .text
 		ret
 
 	; char *string_copiar( char *s )
-	%define dir_nueva [rbp-8]
-	%define dir_orig [rbp-16]
-	%define len [rbp-24]
 	string_copiar:
 		push rbp
 		mov rbp, rsp
-		sub rsp, 24
+        push rbx
+        push r12
+        push r13
 		; ****************
-		mov dir_orig, rdi ; dir_orig <- &s
+		mov rbx, rdi ; rbx <- &s
 		call string_longitud ; al <- len(s)
-		mov BYTE len, al ; len <- len(s)
+        xor r13, r13 ; limpio r13
+		mov r13, rax ; r13 <- len(s)
 
 		mov rdi, rax ; pido len(s) bytes
 		call malloc ; give me some mem ! (1 byte para cada char en s)
-		mov dir_nueva, rax
+		mov r12, rax ; r12 <- nueva dir para el string
 
 		xor rcx, rcx ; limpio rcx porque lo voy a usar para indexar el string; i <- 0
 
 	ciclo_string_copiar:
-		cmp BYTE cl, len ; mientras i < len(s)
+		cmp rcx, r13 ; mientras i < len(s)
 		je fin_string_copiar
 
-		mov rdi, dir_orig
+		mov rdi, rbx
 		add rdi, rcx ; rdi <- *s + i
 
-		mov rax, dir_nueva
+		mov rax, r12
 		add rax, rcx ; rax <- *nueva + i
 
 		mov dl, BYTE [rdi]
@@ -619,8 +619,10 @@ section .text
 		jmp ciclo_string_copiar
 		; ****************
 	fin_string_copiar:
-		mov rax, dir_nueva
-		add rsp, 24
+		mov rax, r12
+        pop r13
+        pop r12
+        pop rbx
 		pop rbp
 		ret
 
