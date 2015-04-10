@@ -72,6 +72,7 @@ section .text
 	estudianteCrear:
 		push rbp
 		mov rbp, rsp
+        sub rsp, 8
         push rbx
         push r12
         push r13
@@ -104,6 +105,7 @@ section .text
         pop r13
         pop r12
         pop rbx
+        add rsp, 8
 		pop rbp
 		ret
 
@@ -132,15 +134,14 @@ section .text
 		ret
 
 	; bool menorEstudiante( estudiante *e1, estudiante *e2 )
-	%define e1 [rbp-8]
-	%define e2 [rbp-16]
 	menorEstudiante:
 		push rbp
 		mov rbp, rsp
-		sub rsp, 16
+        push r12
+        push r13
 		; ****************
-		mov e1, rdi
-		mov e2, rsi
+		mov r12, rdi ; r12 <- &e1
+		mov r13, rsi ; r13 <- &e2
 
 		mov rdi, [rdi + OFFSET_NOMBRE]
 		mov rsi, [rsi + OFFSET_NOMBRE]
@@ -149,8 +150,8 @@ section .text
 		cmp rax, TRUE
 		je menorEstudiante_true ; e1.nombre < e2.nombre
 
-		mov rdi, e1
-		mov rsi, e2
+		mov rdi, r12
+		mov rsi, r13
 		mov rdi, [rdi + OFFSET_NOMBRE]
 		mov rsi, [rsi + OFFSET_NOMBRE]
 
@@ -158,8 +159,8 @@ section .text
 		cmp rax, FALSE
 		je  menorEstudiante_false ; e1.nombre > e2.nombre
 
-		mov rdi, e1
-		mov rsi, e2
+		mov rdi, r12
+		mov rsi, r13
 		mov edi, [rdi + OFFSET_EDAD]
 		mov esi, [rsi + OFFSET_EDAD]
 
@@ -173,7 +174,8 @@ section .text
 		mov rax, QWORD FALSE
 		; ****************
 	fin_menorEstudiante:
-		add rsp, 16
+        pop r13
+        pop r12
 		pop rbp
 		ret
 
