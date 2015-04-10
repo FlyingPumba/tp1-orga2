@@ -186,7 +186,7 @@ section .text
         push rbx
         push r12
 		; ****************
-		mov rbx, rdi ; rbx <- &e
+		mov rbx, rdi ; rbx <- *e
 		mov r12, rsi ; r12 <- f
 
 		mov rdi, [rdi + OFFSET_NOMBRE]
@@ -202,31 +202,31 @@ section .text
 		ret
 
 	; void estudianteImprimir( estudiante *e, FILE *file )
-	%define e [rbp-8]
-	%define file [rbp-16]
 	estudianteImprimir:
 		push rbp
 		mov rbp, rsp
-		sub rsp, 16
+        push rbx
+        push r12
 		; ****************
-		mov e, rdi
-		mov file, rsi
+		mov rbx, rdi ; rbx <- *e
+		mov r12, rsi ; r12 <- *file
 
 		;fprintf (file, formato_estudiante_imprimir, e.nombre, e.grupo, e.edad);
-		mov rdi, file
+		mov rdi, r12
 		mov rsi, formato_estudiante_imprimir
-		mov rdx, e
+		mov rdx, rbx
 		mov rdx, [rdx + OFFSET_NOMBRE]
-		mov rcx, e
+		mov rcx, rbx
 		mov rcx, [rcx + OFFSET_GRUPO]
-		mov r8, e
+		mov r8, rbx
 		mov eax, [r8 + OFFSET_EDAD]
 		xor r8, r8
 		mov r8, rax
 		xor rax, rax ; en rax cantidad de floats a imprimir
 		call fprintf
 		; ****************
-		add rsp, 16
+        pop r12
+        pop rbx
 		pop rbp
 		ret
 
