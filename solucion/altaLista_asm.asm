@@ -237,8 +237,8 @@ section .text
 	nodoCrear:
 		push rbp
 		mov rbp, rsp
-		push rbx
 		sub rsp, 8
+		push rbx
 		; ****************
 		mov rbx, rdi ; salvo los parametros antes de hacer la llamada a malloc
 
@@ -249,8 +249,8 @@ section .text
 		mov QWORD [rax + OFFSET_ANTERIOR], NULL ; NULL para *anterior
 		mov [rax + OFFSET_DATO], rbx ; copio el puntero al dato
 		; ****************
-		add rsp, 8
 		pop rbx
+		add rsp, 8
 		pop rbp
 		ret
 
