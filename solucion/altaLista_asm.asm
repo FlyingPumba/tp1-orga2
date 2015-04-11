@@ -78,23 +78,18 @@ section .text
         push r13
         push r14
 		; ****************
-        ; salvo los parametros antes de hacer la llamada a malloc
 		mov r12, QWORD rdi ; r12 <- &nombre
 		mov r13, QWORD rsi ; r13 <- &grupo
 		mov r14, rdx ; r14 <- edad
-
 		mov rdi, ESTUDIANTE_SIZE ; pido memoria para un nuevo estudiante_t
 		call malloc
 		mov rbx, rax ; rbx <- dir para el nuevo estudiante
-
 		mov rdi, r14
 		mov [rax + OFFSET_EDAD], edi ; copio la edad
-
 		mov rdi, QWORD r12
 		call string_copiar
 		mov rdi, rbx
 		mov [rdi + OFFSET_NOMBRE], rax ; copio el nombre
-
 		mov rdi, QWORD r13
 		call string_copiar
 		mov rdi, rbx
@@ -117,14 +112,11 @@ section .text
         push rbx
 		; ****************
 		mov rbx, rdi ; guardo dir a borrar
-
 		mov rdi, [rdi + OFFSET_NOMBRE]
 		call free ; libero la memoria que use para copiar el nombre
-
 		mov rdi, rbx
 		mov rdi, [rdi + OFFSET_GRUPO]
 		call free ; libero la memoria que use para copiar el grupo
-
 		mov rdi, rbx
 		call free ; libero la memoria que use almacenar la estructura estudiante
 		; ****************
@@ -142,28 +134,22 @@ section .text
 		; ****************
 		mov r12, rdi ; r12 <- &e1
 		mov r13, rsi ; r13 <- &e2
-
 		mov rdi, [rdi + OFFSET_NOMBRE]
 		mov rsi, [rsi + OFFSET_NOMBRE]
 		call string_menor
-
 		cmp rax, TRUE
 		je menorEstudiante_true ; e1.nombre < e2.nombre
-
 		mov rdi, r12
 		mov rsi, r13
 		mov rdi, [rdi + OFFSET_NOMBRE]
 		mov rsi, [rsi + OFFSET_NOMBRE]
-
 		call string_iguales
 		cmp rax, FALSE
 		je  menorEstudiante_false ; e1.nombre > e2.nombre
-
 		mov rdi, r12
 		mov rsi, r13
 		mov edi, [rdi + OFFSET_EDAD]
 		mov esi, [rsi + OFFSET_EDAD]
-
 		cmp edi, esi
 		jl menorEstudiante_true ;  e1.nombre == e2.nombre y  e1.edad < e2.edad
 		jmp menorEstudiante_false
@@ -188,10 +174,8 @@ section .text
 		; ****************
 		mov rbx, rdi ; rbx <- *e
 		mov r12, rsi ; r12 <- f
-
 		mov rdi, [rdi + OFFSET_NOMBRE]
 		call r12
-
 		mov rdi, rbx
 		mov rdi, [rdi + OFFSET_GRUPO]
 		call r12
@@ -210,9 +194,7 @@ section .text
 		; ****************
 		mov rbx, rdi ; rbx <- *e
 		mov r12, rsi ; r12 <- *file
-
-		;fprintf (file, formato_estudiante_imprimir, e.nombre, e.grupo, e.edad);
-		mov rdi, r12
+		mov rdi, r12 ; empiezo a poner parametros para hacer llamada fprintf (file, formato_estudiante_imprimir, e.nombre, e.grupo, e.edad);
 		mov rsi, formato_estudiante_imprimir
 		mov rdx, rbx
 		mov rdx, [rdx + OFFSET_NOMBRE]
@@ -241,10 +223,8 @@ section .text
 		push rbx
 		; ****************
 		mov rbx, rdi ; salvo los parametros antes de hacer la llamada a malloc
-
 		mov rdi, NODO_SIZE ; pido memoria para un nuevo nodo_t
 		call malloc
-
 		mov QWORD [rax + OFFSET_SIGUIENTE], NULL ; NULL para *siguiente
 		mov QWORD [rax + OFFSET_ANTERIOR], NULL ; NULL para *anterior
 		mov [rax + OFFSET_DATO], rbx ; copio el puntero al dato
@@ -262,10 +242,8 @@ section .text
         push rbx
 		; ****************
 		mov rbx, rdi ; guardo dir a borrar
-
 		mov rdi, [rdi + OFFSET_DATO]
 		call rsi ; libero la memoria que use para el dato
-
 		mov rdi, rbx
 		call free ; libero la memoria que use almacenar la estructura nodo
 		; ****************
@@ -281,7 +259,6 @@ section .text
 		; ****************
 		mov rdi, ALTALISTA_SIZE ; pido memoria para un nuevo nodo_t
 		call malloc
-
 		mov rdi, rax
 		mov QWORD [rdi + OFFSET_PRIMERO], NULL ; NULL para *primero
 		mov QWORD [rdi + OFFSET_ULTIMO], NULL ; NULL para *ultimo
@@ -302,27 +279,21 @@ section .text
 		mov rdi, [rdi + OFFSET_PRIMERO]
 		mov r12, rdi ; r12 <- el primer nodo de la lista
 		mov r13, rsi ; r13 <- funcion para imprimir dato
-
 		mov rdi, r12
 		cmp rdi, NULL; verifico si la lista esta vacia
 		je altaListaBorrar_fin
-
 	altaListaBorrar_ciclo: ; rdi esta en nodo_actual
 		mov rdi, [rdi + OFFSET_DATO]
 		call r13 ; borro el dato
-
 		mov rsi, r12
 		mov rdi, r12
 		mov rsi, [rsi + OFFSET_SIGUIENTE] ; me guardo el puntero al siguiente nodo
 		mov r12, rsi
-
 		call free ; borro el nodo
-
 		mov rdi, r12
 		cmp rdi, NULL; verifico si llegamos al final de la lista
 		je altaListaBorrar_fin
 		jmp altaListaBorrar_ciclo
-
 	altaListaBorrar_fin:
 		mov rdi, rbx
 		call free ; borro la lista
@@ -349,21 +320,17 @@ section .text
 		mov rdi, [rdi + OFFSET_PRIMERO]
 		mov rbx, rdi ; rbx <- el primer nodo de la lista
 		mov r12, rdx ; r12 <- funcion para imprimir dato
-
 		mov rdi, rsi
 		mov rsi, fopen_append
 		call fopen
 		mov r13, rax ; r13 <- puntero a file
-
 		mov rdi, rbx ; rdi <- nodo_actual
 		cmp rdi, NULL; verifico si la lista esta vacia
 		je altaListaImprimir_vacia
-
 	altaListaImprimir_ciclo: ; rdi esta en nodo_actual
 		mov rdi, [rdi + OFFSET_DATO] ; rdi <- nodo_actual.dato
 		mov rsi, r13 ; rsi <- file
 		call r12 ; call f_imprimir
-
 		mov rdi, rbx
 		mov rdi, [rdi + OFFSET_SIGUIENTE] ; rdi <- nodo_actual.siguiente
 		cmp rdi, NULL; verifico si llegamos al final de la lista
@@ -386,7 +353,6 @@ section .text
 		pop rbp
 		ret
 
-
 ;/** FUNCIONES AVANZADAS **/
 ;----------------------------------------------------------------------------------------------
 
@@ -398,19 +364,16 @@ section .text
 		mov rdi, [rdi + OFFSET_PRIMERO] ; puntero al primer nodo
 		xor rax, rax ; limpio rax para usarlo como sumador
 		xor rcx, rcx ; limpio rcx para usarlo como contador
-
 		cmp rdi, NULL
 		je edadMedia_vacia
 	edadMedia_ciclo:
 		cmp rdi, NULL
 		je edadMedia_promedio
-
 		mov rsi, rdi
 		mov rsi, [rsi + OFFSET_DATO]
 		mov esi, [rsi + OFFSET_EDAD]
 		add eax, esi
 		add rcx, QWORD 1
-
 		mov rdi, [rdi + OFFSET_SIGUIENTE]
 		jmp edadMedia_ciclo
 	edadMedia_promedio:
@@ -438,11 +401,9 @@ section .text
 		mov rbx, rdi ; rbx <- *l
 		mov r12, rsi ; r12 <- *dato
 		mov r13, rdx ; r13 <- f_comparar
-
 		mov rdi, [rdi + OFFSET_PRIMERO] ; puntero al primer nodo
 		cmp rdi, NULL
 		je insertarOrdenado_al_final ; l->primero == NULL
-		; l->primero != NULL
 		mov r14, rdi ; r14 <- last_nodo_aux
 		; empezamos en l->principio
 		; y avanzamos hasta que last == NULL o f_comparar(last->dato, dato) == FALSE
@@ -509,34 +470,28 @@ section .text
 		mov rbx, rdi ; rbx <- *l
 		mov r12, rdx ; r12 <- *dato
 		mov r13, rsi ; r13 <- f_comparar
-
 		mov rdi, [rdi + OFFSET_PRIMERO] ; puntero al primer nodo
 		cmp QWORD rdi, NULL
 		je filtrarAltaLista_fin ; la lista esta vacia, no hay nada que filtrar
-
 		mov r14, rdi
 		; empezamos en l->principio
 		; y avanzamos hasta que last == NULL
 	filtrarAltaLista_ciclo:
 		cmp QWORD r14, NULL; last == NULL ?
 		je filtrarAltaLista_fin
-
 		mov rdi, r14
 		mov rdi, [rdi + OFFSET_DATO] ; rdi = last_nodo_aux->dato
 		mov rsi, r12 ; rsi <- *dato
 		call r13; f_comparar(last->dato, dato) == TRUE ?
 		cmp rax, TRUE ; si da TRUE, lo dejamos como esta y avanzamos
 		je filtrarAltaLista_ciclo_avanzar
-
 		mov rdi, r14
 		mov rdx, [rdi + OFFSET_ANTERIOR]
 		mov rcx, [rdi + OFFSET_SIGUIENTE]
-
 		cmp rdx, NULL
 		je actual_es_primer_elemento_en_lista
 		cmp rcx, NULL
 		je actual_es_ultimo_elemento_en_lista
-
 		mov [rdx + OFFSET_SIGUIENTE], rcx
 		mov [rcx + OFFSET_ANTERIOR], rdx
 		jmp borrar_actual
@@ -610,28 +565,20 @@ section .text
 		call string_longitud ; al <- len(s)
         xor r13, r13 ; limpio r13
 		mov r13, rax ; r13 <- len(s)
-
 		mov rdi, rax ; pido len(s) bytes
 		call malloc ; give me some mem ! (1 byte para cada char en s)
 		mov r12, rax ; r12 <- nueva dir para el string
-
 		xor rcx, rcx ; limpio rcx porque lo voy a usar para indexar el string; i <- 0
-
 	ciclo_string_copiar:
 		cmp rcx, r13 ; mientras i < len(s)
 		je fin_string_copiar
-
 		mov rdi, rbx
 		add rdi, rcx ; rdi <- *s + i
-
 		mov rax, r12
 		add rax, rcx ; rax <- *nueva + i
-
 		mov dl, BYTE [rdi]
 		mov BYTE [rax], dl ; copio un char
-
 		add BYTE cl, OFFSET_CHAR ; incremento i en 1
-
 		jmp ciclo_string_copiar
 		; ****************
 	fin_string_copiar:
@@ -654,17 +601,14 @@ section .text
 		je string_menor_false ; si termino, voy al fin
 		cmp BYTE [rdi], 0x0 ; verifico si termino s1
 		je string_menor_true ; si termino, voy al fin
-
 		mov cl, BYTE [rsi]
 		cmp BYTE [rdi], cl
 		jl string_menor_true ; s1[i] > s2[i]
 		jg string_menor_false ; s1[i] < s2[i]
-
 		add al, 1 ; incremento el contados. Uso AL porque la longitud de s puede ser a lo sumo de 1 Byte
 		add rdi, OFFSET_CHAR ; paso al siguiente char del string
 		add rsi, OFFSET_CHAR ; paso al siguiente char del string
 		jmp ciclo_string_menor
-
 	string_menor_true:
 		mov rax, QWORD TRUE
 		jmp fin_string_menor
@@ -682,10 +626,8 @@ section .text
         push rbx
 		; ****************
 		mov rbx, rdi ; rbx <- &lista
-
 		mov rdi, rsi ; rdi <- &dato
 		call nodoCrear ; deja en rax la dir del nuevo nodo
-
 		mov rdi, rbx ; rdi <- &lista
 		mov rdi, [rdi + OFFSET_PRIMERO] ; puntero al primer nodo
 		cmp rdi, NULL
