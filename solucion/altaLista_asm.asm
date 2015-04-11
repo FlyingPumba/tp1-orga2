@@ -166,10 +166,9 @@ section .text
 		mov rbx, rdi ; rbx <- *e
 		mov r12, rsi ; r12 <- f
 		mov rdi, [rdi + OFFSET_NOMBRE]
-		call r12
-		mov rdi, rbx
-		mov rdi, [rdi + OFFSET_GRUPO]
-		call r12
+		call r12 ; modifico e.nombre llamando a f
+		mov rdi, [rbx + OFFSET_GRUPO]
+		call r12 ; modifico e.grupo llamando a g
 		; ****************
         pop r12
         pop rbx
