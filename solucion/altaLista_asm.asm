@@ -391,11 +391,9 @@ section .text
 ;----------------------------------------------------------------------------------------------
 
 	; float edadMedia( altaLista *l )
-	%define last_nodo_aux [rbp-8]
 	edadMedia:
 		push rbp
 		mov rbp, rsp
-		sub rsp, 24
 		; ****************
 		mov rdi, [rdi + OFFSET_PRIMERO] ; puntero al primer nodo
 		xor rax, rax ; limpio rax para usarlo como sumador
@@ -425,7 +423,6 @@ section .text
 		movq xmm0, rax  ; return 0 if list if empty
 		; ****************
 	edadMedia_fin:
-		add rsp, 24
 		pop rbp
 		ret
 
