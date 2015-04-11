@@ -209,11 +209,11 @@ section .text
 		sub rsp, 8
 		push rbx
 		; ****************
-		mov rbx, rdi ; salvo los parametros antes de hacer la llamada a malloc
-		mov rdi, NODO_SIZE ; pido memoria para un nuevo nodo_t
-		call malloc
-		mov QWORD [rax + OFFSET_SIGUIENTE], NULL ; NULL para *siguiente
-		mov QWORD [rax + OFFSET_ANTERIOR], NULL ; NULL para *anterior
+		mov rbx, rdi ; rbx <- *dato
+		mov rdi, NODO_SIZE
+		call malloc ; pido memoria para un nuevo nodo
+		mov QWORD [rax + OFFSET_SIGUIENTE], NULL ; NULL para nodo.siguiente
+		mov QWORD [rax + OFFSET_ANTERIOR], NULL ; NULL para nodo.anterior
 		mov [rax + OFFSET_DATO], rbx ; copio el puntero al dato
 		; ****************
 		pop rbx
