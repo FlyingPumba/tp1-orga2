@@ -186,13 +186,10 @@ section .text
 		mov r12, rsi ; r12 <- *file
 		mov rdi, r12 ; empiezo a poner parametros para hacer llamada fprintf (file, formato_estudiante_imprimir, e.nombre, e.grupo, e.edad);
 		mov rsi, formato_estudiante_imprimir
-		mov rdx, rbx
-		mov rdx, [rdx + OFFSET_NOMBRE]
-		mov rcx, rbx
-		mov rcx, [rcx + OFFSET_GRUPO]
-		mov r8, rbx
-		mov eax, [r8 + OFFSET_EDAD]
-		xor r8, r8
+		mov rdx, [rbx + OFFSET_NOMBRE]
+		mov rcx, [rbx + OFFSET_GRUPO]
+		xor rax, rax
+		mov eax, [rbx + OFFSET_EDAD]
 		mov r8, rax
 		xor rax, rax ; en rax cantidad de floats a imprimir
 		call fprintf
