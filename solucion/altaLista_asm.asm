@@ -341,42 +341,48 @@ section .text
 	altaListaImprimir:
 		push rbp
 		mov rbp, rsp
-		sub rsp, 24
+		sub rsp, 8
+		push rbx
+		push r12
+		push r13
 		; ****************
 		mov rdi, [rdi + OFFSET_PRIMERO]
-		mov nodo_actual, rdi ; guardo el primer nodo de la lista
-		mov f_imprimir, rdx ; guardo funcion para imprimir dato
+		mov rbx, rdi ; rbx <- el primer nodo de la lista
+		mov r12, rdx ; r12 <- funcion para imprimir dato
 
 		mov rdi, rsi
 		mov rsi, fopen_append
 		call fopen
-		mov file, rax ; guardo puntero a file
+		mov r13, rax ; r13 <- puntero a file
 
-		mov rdi, nodo_actual
+		mov rdi, rbx ; rdi <- nodo_actual
 		cmp rdi, NULL; verifico si la lista esta vacia
 		je altaListaImprimir_vacia
 
 	altaListaImprimir_ciclo: ; rdi esta en nodo_actual
-		mov rdi, [rdi + OFFSET_DATO]
-		mov rsi, file
-		call f_imprimir
+		mov rdi, [rdi + OFFSET_DATO] ; rdi <- nodo_actual.dato
+		mov rsi, r13 ; rsi <- file
+		call r12 ; call f_imprimir
 
-		mov rdi, nodo_actual
-		mov rdi, [rdi + OFFSET_SIGUIENTE]
+		mov rdi, rbx
+		mov rdi, [rdi + OFFSET_SIGUIENTE] ; rdi <- nodo_actual.siguiente
 		cmp rdi, NULL; verifico si llegamos al final de la lista
 		je altaListaImprimir_fin
-		mov nodo_actual, rdi
+		mov rbx, rdi ; rbx <- nodo_actual.siguiente
 		jmp altaListaImprimir_ciclo
 	altaListaImprimir_vacia:
 		xor rax, rax ; en rax cantidad de floats a imprimir
-		mov rdi, file
+		mov rdi, r13
 		mov rsi, formato_lista_vacia
 		call fprintf
 		; ****************
 	altaListaImprimir_fin:
-		mov rdi, file
+		mov rdi, r13
 		call fclose ; cierro el archivo
-		add rsp, 24
+		pop r13
+        pop r12
+        pop rbx
+		add rsp, 8
 		pop rbp
 		ret
 
