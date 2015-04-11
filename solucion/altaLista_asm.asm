@@ -427,62 +427,60 @@ section .text
 		ret
 
 	; void insertarOrdenado( altaLista *l, void *dato, tipoFuncionCompararDato f )
-	%define dir_lista [rbp-8]
-	%define dato [rbp-16]
-	%define f_comparar [rbp-24]
-	%define last_nodo_aux [rbp-32]
 	insertarOrdenado:
 		push rbp
 		mov rbp, rsp
-		sub rsp, 32
+		push rbx
+		push r12
+		push r13
+		push r14
 		; ****************
-		mov dir_lista, rdi
-		mov dato, rsi
-		mov f_comparar, rdx
+		mov rbx, rdi ; rbx <- *l
+		mov r12, rsi ; r12 <- *dato
+		mov r13, rdx ; r13 <- f_comparar
 
-		mov rdi, dir_lista
 		mov rdi, [rdi + OFFSET_PRIMERO] ; puntero al primer nodo
 		cmp rdi, NULL
 		je insertarOrdenado_al_final ; l->primero == NULL
 		; l->primero != NULL
-		mov last_nodo_aux, rdi
+		mov r14, rdi ; r14 <- last_nodo_aux
 		; empezamos en l->principio
 		; y avanzamos hasta que last == NULL o f_comparar(last->dato, dato) == FALSE
 	insertarOrdenado_ciclo:
-		cmp QWORD last_nodo_aux, NULL; last == NULL ?
+		cmp QWORD r14, NULL; last == NULL ?
 		je insertarOrdenado_fin_ciclo
-		mov rdi, last_nodo_aux
+		mov rdi, r14
 		mov rdi, [rdi + OFFSET_DATO] ; rdi = last_nodo_aux->dato
-		mov rsi, dato
-		call f_comparar; f_comparar(last->dato, dato) == FALSE ?
+		mov rsi, r12
+		call r13; f_comparar(last->dato, dato) == FALSE ?
 		cmp rax, FALSE
 		je insertarOrdenado_fin_ciclo
 		; si llegamos aca, todavia tenemos que seguir avanzando
-		mov rdi, last_nodo_aux
-		mov rdi, [rdi + OFFSET_SIGUIENTE]
-		mov last_nodo_aux, rdi; last_nodo_aux = last_nodo_aux->siguiente
+		mov rdi, r14
+		mov rdi, [rdi + OFFSET_SIGUIENTE] ; rdi <- last->siguiente
+		mov r14, rdi; last = last->siguiente
 		jmp insertarOrdenado_ciclo
 	insertarOrdenado_fin_ciclo:
-		cmp QWORD last_nodo_aux, NULL ; last == NULL ?
+		cmp QWORD r14, NULL ; last == NULL ?
 		je insertarOrdenado_al_final ; entonces llegamos al final de la lista
-		mov rsi, last_nodo_aux
+		mov rsi, r14
 		cmp QWORD [rsi + OFFSET_ANTERIOR], NULL ; last->anterior == NULL ?
 		je insertarOrdenado_al_principio ; entonces tenemos que insertar al principio
 		jmp insertarOrdenado_al_medio ; sino no pasa nada de esto, hay que insertar en el medio
 	insertarOrdenado_al_final:
-		mov rdi, dir_lista
-		mov rsi, dato
+		mov rdi, rbx ; rdi <- *l
+		mov rsi, r12 ; rsi <- *dato
 		call insertarAtras
 		jmp insertarOrdenado_fin
 	insertarOrdenado_al_principio:
-		mov rdi, dir_lista
-		mov rsi, dato
+		mov rdi, rbx ; rdi <- *l
+		mov rsi, r12 ; rsi <- *dato
 		call insertarAdelante
 		jmp insertarOrdenado_fin
 	insertarOrdenado_al_medio:
-		mov rdi, dato
+		mov rdi, r12 ; rdi <- *dato
 		call nodoCrear ; creo un nuevo nodo con el dato
-		mov rdi, last_nodo_aux
+		mov rdi, r14 ; rdi <- last_nodo_aux
 		; arreglo hacia atras
 		mov rsi, [rdi + OFFSET_ANTERIOR] ; rsi: last->anterior
 		mov [rsi + OFFSET_SIGUIENTE], rax ; rsi->siguiente = nuevo
@@ -492,7 +490,10 @@ section .text
 		mov [rax + OFFSET_SIGUIENTE], rdi ; nuevo->anterior = rsi
 		; ****************
 	insertarOrdenado_fin:
-		add rsp, 32
+		pop r14
+		pop r13
+        pop r12
+        pop rbx
 		pop rbp
 		ret
 
