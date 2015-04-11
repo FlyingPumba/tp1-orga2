@@ -127,24 +127,20 @@ section .text
         push r12
         push r13
 		; ****************
-		mov r12, rdi ; r12 <- &e1
-		mov r13, rsi ; r13 <- &e2
-		mov rdi, [rdi + OFFSET_NOMBRE]
-		mov rsi, [rsi + OFFSET_NOMBRE]
+		mov r12, rdi ; r12 <- *e1
+		mov r13, rsi ; r13 <- *e2
+		mov rdi, [rdi + OFFSET_NOMBRE] ; rdi <- e1.nombre
+		mov rsi, [rsi + OFFSET_NOMBRE] ; rsi <- e2.nombre
 		call string_menor
 		cmp rax, TRUE
 		je menorEstudiante_true ; e1.nombre < e2.nombre
-		mov rdi, r12
-		mov rsi, r13
-		mov rdi, [rdi + OFFSET_NOMBRE]
-		mov rsi, [rsi + OFFSET_NOMBRE]
+		mov rdi, [r12 + OFFSET_NOMBRE]
+		mov rsi, [r13 + OFFSET_NOMBRE]
 		call string_iguales
 		cmp rax, FALSE
 		je  menorEstudiante_false ; e1.nombre > e2.nombre
-		mov rdi, r12
-		mov rsi, r13
-		mov edi, [rdi + OFFSET_EDAD]
-		mov esi, [rsi + OFFSET_EDAD]
+		mov edi, [r12 + OFFSET_EDAD]
+		mov esi, [r13 + OFFSET_EDAD]
 		cmp edi, esi
 		jl menorEstudiante_true ;  e1.nombre == e2.nombre y  e1.edad < e2.edad
 		jmp menorEstudiante_false
