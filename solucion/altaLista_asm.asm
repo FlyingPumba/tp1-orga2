@@ -228,7 +228,7 @@ section .text
 		sub rsp, 8
         push rbx
 		; ****************
-		mov rbx, rdi ; guardo dir a borrar
+		mov rbx, rdi ; rbx <- *n
 		mov rdi, [rdi + OFFSET_DATO]
 		call rsi ; libero la memoria que use para el dato
 		mov rdi, rbx
