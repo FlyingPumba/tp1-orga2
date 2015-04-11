@@ -244,11 +244,10 @@ section .text
 		push rbp
 		mov rbp, rsp
 		; ****************
-		mov rdi, ALTALISTA_SIZE ; pido memoria para un nuevo nodo_t
-		call malloc
-		mov rdi, rax
-		mov QWORD [rdi + OFFSET_PRIMERO], NULL ; NULL para *primero
-		mov QWORD [rdi + OFFSET_ULTIMO], NULL ; NULL para *ultimo
+		mov rdi, ALTALISTA_SIZE
+		call malloc ; pido memoria para una nueva lista
+		mov QWORD [rax + OFFSET_PRIMERO], NULL ; NULL para lista.primero
+		mov QWORD [rax + OFFSET_ULTIMO], NULL ; NULL para lista.ultimo
 		; ****************
 		pop rbp
 		ret
