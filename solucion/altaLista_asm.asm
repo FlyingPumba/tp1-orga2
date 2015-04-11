@@ -78,22 +78,20 @@ section .text
         push r13
         push r14
 		; ****************
-		mov r12, QWORD rdi ; r12 <- &nombre
-		mov r13, QWORD rsi ; r13 <- &grupo
+		mov r12, rdi ; r12 <- *nombre
+		mov r13, rsi ; r13 <- *grupo
 		mov r14, rdx ; r14 <- edad
-		mov rdi, ESTUDIANTE_SIZE ; pido memoria para un nuevo estudiante_t
-		call malloc
+		mov rdi, ESTUDIANTE_SIZE
+		call malloc  ; pido memoria para un nuevo estudiante
 		mov rbx, rax ; rbx <- dir para el nuevo estudiante
-		mov rdi, r14
-		mov [rax + OFFSET_EDAD], edi ; copio la edad
-		mov rdi, QWORD r12
+		mov rdi, r14 ; rdi <- edad
+		mov [rbx + OFFSET_EDAD], edi ; copio la edad a la nueva dir
+		mov rdi, r12 ; rdi <- *nombre
 		call string_copiar
-		mov rdi, rbx
-		mov [rdi + OFFSET_NOMBRE], rax ; copio el nombre
-		mov rdi, QWORD r13
+		mov [rbx + OFFSET_NOMBRE], rax ; copio el nuevo *nombre a la nueva dir
+		mov rdi, r13 ; rdi <- *grupo
 		call string_copiar
-		mov rdi, rbx
-		mov [rdi + OFFSET_GRUPO], rax ; copio el grupo
+		mov [rbx + OFFSET_GRUPO], rax ; copio el nuevo *grupo a la nueva dir
 		; ****************
 		mov rax, rbx
         pop r14
