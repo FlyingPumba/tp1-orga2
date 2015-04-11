@@ -107,11 +107,10 @@ section .text
 		sub rsp, 8
         push rbx
 		; ****************
-		mov rbx, rdi ; guardo dir a borrar
+		mov rbx, rdi ; rbx <- *e
 		mov rdi, [rdi + OFFSET_NOMBRE]
 		call free ; libero la memoria que use para copiar el nombre
-		mov rdi, rbx
-		mov rdi, [rdi + OFFSET_GRUPO]
+		mov rdi, [rbx + OFFSET_GRUPO]
 		call free ; libero la memoria que use para copiar el grupo
 		mov rdi, rbx
 		call free ; libero la memoria que use almacenar la estructura estudiante
