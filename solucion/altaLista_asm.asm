@@ -553,7 +553,7 @@ section .text
 		push rbp
 		mov rbp, rsp
 		; ****************
-		xor rax, rax ; limpio rax
+		xor rax, rax ; limpio rax para usarlo como indice de los strings
 	ciclo_string_menor:
 		cmp BYTE [rsi], 0x0 ; verifico si termino s2
 		je string_menor_false ; si termino, voy al fin
@@ -572,8 +572,8 @@ section .text
 		jmp fin_string_menor
 	string_menor_false:
 		mov rax, QWORD FALSE
-		; ****************
 	fin_string_menor:
+		; ****************
 		pop rbp
 		ret
 
