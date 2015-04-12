@@ -343,8 +343,7 @@ section .text
 	edadMedia_ciclo:
 		cmp rdi, NULL
 		je edadMedia_promedio
-		mov rsi, rdi
-		mov rsi, [rsi + OFFSET_DATO]
+		mov rsi, [rdi + OFFSET_DATO]
 		mov esi, [rsi + OFFSET_EDAD]
 		add eax, esi
 		add rcx, QWORD 1
