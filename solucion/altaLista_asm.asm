@@ -520,12 +520,11 @@ section .text
         push r12
         push r13
 		; ****************
-		mov rbx, rdi ; rbx <- &s
-		call string_longitud ; al <- len(s)
-        xor r13, r13 ; limpio r13
+		mov rbx, rdi ; rbx <- *s
+		call string_longitud ; rax <- len(s)
 		mov r13, rax ; r13 <- len(s)
 		mov rdi, rax ; pido len(s) bytes
-		call malloc ; give me some mem ! (1 byte para cada char en s)
+		call malloc ; pido memoria para copiar el string (1 byte para cada char en s)
 		mov r12, rax ; r12 <- nueva dir para el string
 		xor rcx, rcx ; limpio rcx porque lo voy a usar para indexar el string; i <- 0
 	ciclo_string_copiar:
@@ -539,8 +538,8 @@ section .text
 		mov BYTE [rax], dl ; copio un char
 		add BYTE cl, OFFSET_CHAR ; incremento i en 1
 		jmp ciclo_string_copiar
-		; ****************
 	fin_string_copiar:
+		; ****************
 		mov rax, r12
         pop r13
         pop r12
