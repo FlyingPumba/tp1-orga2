@@ -262,22 +262,17 @@ section .text
         push r13
 		; ****************
 		mov rbx, rdi ; rbx <- *l
-		mov rdi, [rdi + OFFSET_PRIMERO]
-		mov r12, rdi ; r12 <- el primer nodo de la lista
+		mov r12, [rdi + OFFSET_PRIMERO] ; r12 <- el primer nodo de la lista
 		mov r13, rsi ; r13 <- funcion para imprimir dato
-		mov rdi, r12
-		cmp rdi, NULL; verifico si la lista esta vacia
+		cmp r12, NULL; verifico si la lista esta vacia
 		je altaListaBorrar_fin
-	altaListaBorrar_ciclo: ; rdi esta en nodo_actual
-		mov rdi, [rdi + OFFSET_DATO]
+	altaListaBorrar_ciclo:
+		mov rdi, [r12 + OFFSET_DATO]
 		call r13 ; borro el dato
-		mov rsi, r12
 		mov rdi, r12
-		mov rsi, [rsi + OFFSET_SIGUIENTE] ; me guardo el puntero al siguiente nodo
-		mov r12, rsi
+		mov r12, [r12 + OFFSET_SIGUIENTE] ; me guardo el puntero al siguiente nodo
 		call free ; borro el nodo
-		mov rdi, r12
-		cmp rdi, NULL; verifico si llegamos al final de la lista
+		cmp r12, NULL; verifico si llegamos al final de la lista
 		je altaListaBorrar_fin
 		jmp altaListaBorrar_ciclo
 	altaListaBorrar_fin:
