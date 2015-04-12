@@ -287,9 +287,6 @@ section .text
 		ret
 
 	; void altaListaImprimir( altaLista *l, char *archivo, tipoFuncionImprimirDato f )
-	%define nodo_actual [rbp-8]
-	%define file [rbp-16]
-	%define f_imprimir [rbp-24]
 	altaListaImprimir:
 		push rbp
 		mov rbp, rsp
@@ -298,35 +295,31 @@ section .text
 		push r12
 		push r13
 		; ****************
-		mov rdi, [rdi + OFFSET_PRIMERO]
-		mov rbx, rdi ; rbx <- el primer nodo de la lista
+		mov rbx, [rdi + OFFSET_PRIMERO] ; rbx <- el primer nodo de la lista
 		mov r12, rdx ; r12 <- funcion para imprimir dato
-		mov rdi, rsi
-		mov rsi, fopen_append
-		call fopen
-		mov r13, rax ; r13 <- puntero a file
-		mov rdi, rbx ; rdi <- nodo_actual
-		cmp rdi, NULL; verifico si la lista esta vacia
+		mov rdi, rsi ; rdi <- *archivo
+		mov rsi, fopen_append ; rsi <- "a+" (append)
+		call fopen ; abro el archivo
+		mov r13, rax ; r13 <- *file
+		cmp rbx, NULL; verifico si la lista esta vacia
 		je altaListaImprimir_vacia
 	altaListaImprimir_ciclo: ; rdi esta en nodo_actual
-		mov rdi, [rdi + OFFSET_DATO] ; rdi <- nodo_actual.dato
-		mov rsi, r13 ; rsi <- file
+		mov rdi, [rbx + OFFSET_DATO] ; rdi <- nodo_actual.dato
+		mov rsi, r13 ; rsi <- *file
 		call r12 ; call f_imprimir
-		mov rdi, rbx
-		mov rdi, [rdi + OFFSET_SIGUIENTE] ; rdi <- nodo_actual.siguiente
-		cmp rdi, NULL; verifico si llegamos al final de la lista
+		cmp QWORD [rbx + OFFSET_SIGUIENTE], NULL; verifico si llegamos al final de la lista
 		je altaListaImprimir_fin
-		mov rbx, rdi ; rbx <- nodo_actual.siguiente
+		mov QWORD rbx, [rbx + OFFSET_SIGUIENTE] ; rbx <- nodo_actual.siguiente
 		jmp altaListaImprimir_ciclo
 	altaListaImprimir_vacia:
 		xor rax, rax ; en rax cantidad de floats a imprimir
-		mov rdi, r13
-		mov rsi, formato_lista_vacia
+		mov rdi, r13 ; rdi <- *file
+		mov rsi, formato_lista_vacia ; rsi <- "<vacia>"
 		call fprintf
-		; ****************
 	altaListaImprimir_fin:
-		mov rdi, r13
+		mov rdi, r13 ; rdi <- *file
 		call fclose ; cierro el archivo
+		; ****************
 		pop r13
         pop r12
         pop rbx
