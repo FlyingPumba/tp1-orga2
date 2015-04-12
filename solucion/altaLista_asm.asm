@@ -437,47 +437,41 @@ section .text
 		mov rbx, rdi ; rbx <- *l
 		mov r12, rdx ; r12 <- *dato
 		mov r13, rsi ; r13 <- f_comparar
-		mov rdi, [rdi + OFFSET_PRIMERO] ; puntero al primer nodo
-		cmp QWORD rdi, NULL
+		mov r14, [rbx + OFFSET_PRIMERO] ; r14 <- puntero al primer nodo
+		cmp QWORD r14, NULL
 		je filtrarAltaLista_fin ; la lista esta vacia, no hay nada que filtrar
-		mov r14, rdi
 		; empezamos en l->principio
 		; y avanzamos hasta que last == NULL
 	filtrarAltaLista_ciclo:
 		cmp QWORD r14, NULL; last == NULL ?
 		je filtrarAltaLista_fin
-		mov rdi, r14
-		mov rdi, [rdi + OFFSET_DATO] ; rdi = last_nodo_aux->dato
+		mov rdi, [r14 + OFFSET_DATO] ; rdi <- last_nodo_aux.dato
 		mov rsi, r12 ; rsi <- *dato
 		call r13; f_comparar(last->dato, dato) == TRUE ?
 		cmp rax, TRUE ; si da TRUE, lo dejamos como esta y avanzamos
 		je filtrarAltaLista_ciclo_avanzar
-		mov rdi, r14
-		mov rdx, [rdi + OFFSET_ANTERIOR]
-		mov rcx, [rdi + OFFSET_SIGUIENTE]
+		mov rdx, [r14 + OFFSET_ANTERIOR]
+		mov rcx, [r14 + OFFSET_SIGUIENTE]
 		cmp rdx, NULL
 		je actual_es_primer_elemento_en_lista
 		cmp rcx, NULL
 		je actual_es_ultimo_elemento_en_lista
-		mov [rdx + OFFSET_SIGUIENTE], rcx
-		mov [rcx + OFFSET_ANTERIOR], rdx
+		mov [rdx + OFFSET_SIGUIENTE], rcx ; actual.anterior.siguiente <- actual.siguiente
+		mov [rcx + OFFSET_ANTERIOR], rdx ; actual.siguiente.anterior <- actual.anterior
 		jmp borrar_actual
 	actual_es_ultimo_elemento_en_lista:
-		mov r8, rbx ; r8 <- *l
-		mov [r8 + OFFSET_ULTIMO], rdx
-		mov QWORD [rdx + OFFSET_SIGUIENTE], NULL
+		mov [rbx + OFFSET_ULTIMO], rdx ; lista.ultimo <- actual.anterior
+		mov QWORD [rdx + OFFSET_SIGUIENTE], NULL ; actual.anterior.siguiente <- NULL
 		jmp borrar_actual
 	actual_es_primer_elemento_en_lista:
 		cmp rcx, NULL
 		je actual_es_unico_elemento_en_lista
-		mov r8, rbx ; r8 <- *l
-		mov [r8 + OFFSET_PRIMERO], rcx
-		mov QWORD [rcx + OFFSET_ANTERIOR], NULL
+		mov [rbx + OFFSET_PRIMERO], rcx ; lista.primero <- actual.siguiente
+		mov QWORD [rcx + OFFSET_ANTERIOR], NULL ; actual.siguiente.anterior <- NULL
 		jmp borrar_actual
 	actual_es_unico_elemento_en_lista:
-		mov r8, rbx ; r8 <- *l
-		mov QWORD [r8 + OFFSET_PRIMERO], NULL
-		mov QWORD [r8 + OFFSET_ULTIMO], NULL
+		mov QWORD [rbx + OFFSET_PRIMERO], NULL ; lista.primero <- NULL
+		mov QWORD [rbx + OFFSET_ULTIMO], NULL ; lista.ultimo <- NULL
 	borrar_actual:
 		mov rdi, r14 ; rdi <- last
 		mov r14, rcx ; r14 <- last.siguiente
@@ -485,9 +479,7 @@ section .text
 		call nodoBorrar
 		jmp filtrarAltaLista_ciclo
 	filtrarAltaLista_ciclo_avanzar:
-	mov rdi, r14 ; rdi <- last
-		mov rdi, [rdi + OFFSET_SIGUIENTE]
-		mov r14, rdi; r14 <- last_nodo_aux.siguiente
+		mov r14, [r14 + OFFSET_SIGUIENTE] ; r14 <- actual.siguiente
 		jmp filtrarAltaLista_ciclo
 		; ****************
 	filtrarAltaLista_fin:
