@@ -374,31 +374,26 @@ section .text
 		mov rbx, rdi ; rbx <- *l
 		mov r12, rsi ; r12 <- *dato
 		mov r13, rdx ; r13 <- f_comparar
-		mov rdi, [rdi + OFFSET_PRIMERO] ; puntero al primer nodo
-		cmp rdi, NULL
+		mov r14, [rbx + OFFSET_PRIMERO] ; r14 <- puntero al primer nodo
+		cmp r14, NULL
 		je insertarOrdenado_al_final ; l->primero == NULL
-		mov r14, rdi ; r14 <- last_nodo_aux
 		; empezamos en l->principio
 		; y avanzamos hasta que last == NULL o f_comparar(last->dato, dato) == FALSE
 	insertarOrdenado_ciclo:
 		cmp QWORD r14, NULL; last == NULL ?
 		je insertarOrdenado_fin_ciclo
-		mov rdi, r14
-		mov rdi, [rdi + OFFSET_DATO] ; rdi = last_nodo_aux->dato
-		mov rsi, r12
-		call r13; f_comparar(last->dato, dato) == FALSE ?
-		cmp rax, FALSE
+		mov rdi, [r14 + OFFSET_DATO] ; rdi <- last_nodo_aux.dato
+		mov rsi, r12 ; rsi <- *dato
+		call r13 ; call f_comparar
+		cmp rax, FALSE ; f_comparar(last->dato, dato) == FALSE ?
 		je insertarOrdenado_fin_ciclo
 		; si llegamos aca, todavia tenemos que seguir avanzando
-		mov rdi, r14
-		mov rdi, [rdi + OFFSET_SIGUIENTE] ; rdi <- last->siguiente
-		mov r14, rdi; last = last->siguiente
+		mov r14, [r14 + OFFSET_SIGUIENTE] ; r14 <- last.siguiente
 		jmp insertarOrdenado_ciclo
 	insertarOrdenado_fin_ciclo:
 		cmp QWORD r14, NULL ; last == NULL ?
 		je insertarOrdenado_al_final ; entonces llegamos al final de la lista
-		mov rsi, r14
-		cmp QWORD [rsi + OFFSET_ANTERIOR], NULL ; last->anterior == NULL ?
+		cmp QWORD [r14 + OFFSET_ANTERIOR], NULL ; last->anterior == NULL ?
 		je insertarOrdenado_al_principio ; entonces tenemos que insertar al principio
 		jmp insertarOrdenado_al_medio ; sino no pasa nada de esto, hay que insertar en el medio
 	insertarOrdenado_al_final:
@@ -414,14 +409,13 @@ section .text
 	insertarOrdenado_al_medio:
 		mov rdi, r12 ; rdi <- *dato
 		call nodoCrear ; creo un nuevo nodo con el dato
-		mov rdi, r14 ; rdi <- last_nodo_aux
 		; arreglo hacia atras
-		mov rsi, [rdi + OFFSET_ANTERIOR] ; rsi: last->anterior
-		mov [rsi + OFFSET_SIGUIENTE], rax ; rsi->siguiente = nuevo
-		mov [rax + OFFSET_ANTERIOR], rsi ; nuevo->anterior = rsi
+		mov rsi, [r14 + OFFSET_ANTERIOR] ; rsi <- last.anterior
+		mov [rsi + OFFSET_SIGUIENTE], rax ; rsi.siguiente <- nuevo
+		mov [rax + OFFSET_ANTERIOR], rsi ; nuevo.anterior <- rsi
 		; arreglo hacia adelante
-		mov [rdi + OFFSET_ANTERIOR], rax ; last->anterior = nuevo
-		mov [rax + OFFSET_SIGUIENTE], rdi ; nuevo->anterior = rsi
+		mov [r14 + OFFSET_ANTERIOR], rax ; last.anterior <- nuevo
+		mov [rax + OFFSET_SIGUIENTE], r14 ; nuevo.anterior <- rsi
 		; ****************
 	insertarOrdenado_fin:
 		pop r14
