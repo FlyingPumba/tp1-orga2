@@ -507,7 +507,6 @@ section .text
 		jmp ciclo_string_longitud
 		; ****************
 	fin_string_longitud:
-		add al, 1 ; incremento en 1 para tener en cuenta la terminacion en NULL
 		pop rbp
 		ret
 
@@ -522,6 +521,7 @@ section .text
 		; ****************
 		mov rbx, rdi ; rbx <- *s
 		call string_longitud ; rax <- len(s)
+		add al, 1 ; incremento en 1 para tener en cuenta la terminacion en NULL
 		mov r13, rax ; r13 <- len(s)
 		mov rdi, rax ; pido len(s) bytes
 		call malloc ; pido memoria para copiar el string (1 byte para cada char en s)
