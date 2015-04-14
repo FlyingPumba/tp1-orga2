@@ -142,7 +142,7 @@ section .text
 		mov edi, [r12 + OFFSET_EDAD]
 		mov esi, [r13 + OFFSET_EDAD]
 		cmp edi, esi
-		jl menorEstudiante_true ;  e1.nombre == e2.nombre y  e1.edad < e2.edad
+		jle menorEstudiante_true ;  e1.nombre == e2.nombre y  e1.edad <= e2.edad
 		jmp menorEstudiante_false
 	menorEstudiante_true:
 		mov rax, QWORD TRUE
@@ -378,14 +378,14 @@ section .text
 		cmp r14, NULL
 		je insertarOrdenado_al_final ; l->primero == NULL
 		; empezamos en l->principio
-		; y avanzamos hasta que last == NULL o f_comparar(last->dato, dato) == FALSE
+		; y avanzamos hasta que last == NULL o f_comparar(dato, last->dato) == TRUE
 	insertarOrdenado_ciclo:
 		cmp QWORD r14, NULL; last == NULL ?
 		je insertarOrdenado_fin_ciclo
-		mov rdi, [r14 + OFFSET_DATO] ; rdi <- last_nodo_aux.dato
-		mov rsi, r12 ; rsi <- *dato
+		mov rsi, [r14 + OFFSET_DATO] ; rdi <- last_nodo_aux.dato
+		mov rdi, r12 ; rsi <- *dato
 		call r13 ; call f_comparar
-		cmp rax, FALSE ; f_comparar(last->dato, dato) == FALSE ?
+		cmp rax, TRUE ; f_comparar(dato, last->dato) == TRUE ?
 		je insertarOrdenado_fin_ciclo
 		; si llegamos aca, todavia tenemos que seguir avanzando
 		mov r14, [r14 + OFFSET_SIGUIENTE] ; r14 <- last.siguiente
